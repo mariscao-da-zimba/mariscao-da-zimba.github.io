@@ -1,0 +1,7 @@
+import Link from "./document-link";
+export function PageHero({kicker,title,intro,tone="green"}:{kicker:string;title:string;intro:string;tone?:"green"|"blue"|"sand"}){return <section className={`page-hero ${tone}`}><p className="eyebrow">{kicker}</p><h1>{title}</h1><p>{intro}</p></section>}
+export function Section({children,className="",id}:{children:React.ReactNode;className?:string;id?:string}){return <section id={id} className={`content-section ${className}`}>{children}</section>}
+export function SectionTitle({kicker,title,intro}:{kicker?:string;title:string;intro?:string}){return <header className="content-heading">{kicker&&<p className="eyebrow">{kicker}</p>}<h2>{title}</h2>{intro&&<p>{intro}</p>}</header>}
+export function Breadcrumb({items}:{items:[string,string?][]}){return <nav className="breadcrumb" aria-label="Trilha de navegação">{items.map(([name,href],i)=><span key={name}>{i>0&&<i>/</i>}{href?<Link href={href}>{name}</Link>:name}</span>)}</nav>}
+export function StatusBadge({status}:{status:string}){const labels:Record<string,string>={current:"Atual",historical:"Histórico",permanent:"Permanente",archive:"Arquivo",development:"Em desenvolvimento"};return <span className={`badge ${status}`}>{labels[status]||status}</span>}
+export function EmptyState({title,text}:{title:string;text:string}){return <div className="empty-state"><span aria-hidden="true">✦</span><h3>{title}</h3><p>{text}</p></div>}

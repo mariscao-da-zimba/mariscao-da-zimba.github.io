@@ -1,0 +1,16 @@
+/* eslint-disable @next/next/no-img-element -- local guide assets are already compressed */
+import Link from "../../components/document-link";
+import { ArrowUpRight } from "lucide-react";
+import { PageHero, Section, SectionTitle } from "../../components/ui";
+import { guideImageSrcSet, landmarks } from "../../content/landmarks";
+import { createPageMetadata } from "../../content/metadata";
+
+export const metadata=createPageMetadata({title:"Memória",description:"Histórias documentadas de pessoas, trabalhos e lugares de Imbituba.",path:"/memoria"});
+const memorySlugs=["dunas-da-ribanceira","mirante-da-praia-do-porto","museu-nacional-da-baleia-franca","rancho-dos-pescadores-artesanais","capelinha-de-sao-pedro","trilha-do-farol-da-praia-da-vila"];
+
+export default function Memoria(){const memories=memorySlugs.map((slug)=>landmarks.find((item)=>item.slug===slug)).filter((item)=>item!==undefined);return <main>
+  <PageHero kicker="Histórias documentadas" title="Memórias que vivem nos lugares" intro="Paisagens, trabalhos, fé, patrimônio e resistência comunitária narrados a partir do guia oficial."/>
+  <Section><SectionTitle kicker="Caderno de memórias" title="Seis portas de entrada" intro="Cada história está ligada a um ponto do Caminho dos Butiazais e à sua fonte."/><div className="memory-grid">{memories.map((memory,index)=><Link key={memory.slug} href={`/caminho-dos-butiazais/${memory.slug}`} className="memory-card"><img src={memory.image} srcSet={guideImageSrcSet(memory.image,memory.imageWidth)} sizes="(max-width: 900px) calc(100vw - 44px), 40vw" alt="" width={memory.imageWidth} height={memory.imageHeight} loading="lazy" decoding="async"/><div><span>{String(index+1).padStart(2,"0")} · {memory.category}</span><h2>{memory.name}</h2><p>{memory.longDescription}</p><b>Ler história <ArrowUpRight aria-hidden="true"/></b></div></Link>)}</div></Section>
+  <Section className="dark"><SectionTitle kicker="Livros, trabalho e personagens" title="Outros registros da trajetória" intro="Projetos documentados em atas, programações culturais e imprensa local."/><div className="three-col memory-registers"><article><span>Trabalho e território</span><h3>Lavadeiras da Praia do Porto</h3><p>Resgate citado entre as ações marcantes do Centro pela Câmara Municipal e pela Rota Açoriana.</p><Link href="/projetos/lavadeiras-da-praia-do-porto">Conhecer o registro →</Link></article><article><span>Livro-memória · 2022</span><h3>Jorge Coelho — Coração Açoriano</h3><p>Entrevistas e pesquisa sobre a vida, a obra e as conexões açorianas do músico.</p><Link href="/projetos/jorge-coelho-coracao-acoriano">Conhecer o livro →</Link></article><article><span>Conto · 2022</span><h3>Chico Pomboca</h3><p>Obra de Célio de Oliveira apresentada publicamente na 3ª Feira do Livro de Imbituba.</p><Link href="/projetos/chico-pomboca">Conhecer o conto →</Link></article></div></Section>
+  <Section className="sand split"><SectionTitle kicker="Acervo em expansão" title="A memória continua sendo construída"/><div className="prose"><p>Entrevistas, fotografias de famílias e depoimentos só serão publicados com identificação, contexto, crédito e autorização. O portal não inventa vozes nem biografias para preencher lacunas.</p><p><Link className="button text" href="/acervo">Conhecer o acervo verificado →</Link></p></div></Section>
+</main>}

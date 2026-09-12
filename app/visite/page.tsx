@@ -1,0 +1,14 @@
+import { MapPin } from "lucide-react";
+import { PageHero, Section, SectionTitle } from "../../components/ui";
+import { site } from "../../content/site";
+import { createPageMetadata } from "../../content/metadata";
+import { SocialIcon } from "../../components/social-icon";
+
+export const metadata=createPageMetadata({title:"Visite",description:"Endereço, mapa e orientações para visitar o Mariscão da Zimba em Imbituba.",path:"/visite"});
+
+export default function Visite(){return <main>
+  <PageHero kicker="Vila Nova Alvorada · Imbituba" title="Venha conhecer o Centro" intro="Um ponto de encontro entre cultura, memória, território e comunidade." tone="green"/>
+  <Section className="visit-grid"><div className="address-card"><p className="eyebrow">Endereço público</p><h2>{site.name}</h2>{site.address.map((line)=><p key={line}>{line}</p>)}<a href={site.phoneHref}>{site.phone}</a><div className="actions"><a className="button primary" href={site.mapsRoute} target="_blank" rel="noreferrer"><MapPin aria-hidden="true"/>Traçar rota no Google Maps</a><a className="button text" href={site.social.whatsapp} target="_blank" rel="noreferrer"><SocialIcon name="whatsapp"/>Agendar pelo WhatsApp</a></div></div><div className="map-frame"><iframe title="Mapa do endereço do Mariscão da Zimba em Imbituba" src="https://www.google.com/maps?q=Rua%20Herc%C3%ADlio%20Nunes%20264%2C%20Vila%20Nova%20Alvorada%2C%20Imbituba%2C%20SC&output=embed" loading="lazy" referrerPolicy="no-referrer-when-downgrade"/></div></Section>
+  <Section><SectionTitle kicker="Experiência cultural" title="O que o guia apresenta" intro="A sede é descrita como um espaço de encontro com a história e os costumes do litoral catarinense."/><div className="three-col"><article><h3>Visitas guiadas</h3><p>O guia informa atendimento mediante agendamento prévio pelo telefone público do Centro.</p></article><article><h3>Exposições e encontros</h3><p>Feiras, eventos e exposições apresentam artesanato, publicações e produtos de identidade cultural.</p></article><article><h3>Acervo e tradições</h3><p>Objetos, registros e narrativas aproximam visitantes da cultura de base açoriana e das memórias da região.</p></article></div></Section>
+  <Section className="sand split"><SectionTitle kicker="Antes de visitar" title="Agende sua visita"/><div className="prose"><p>O atendimento atual e as visitas são realizados mediante agendamento pelo WhatsApp ou telefone do Centro. Combine dia e horário antes de se deslocar.</p><p>A rota é gerada pelo endereço institucional público. Ainda não foi localizada uma ficha empresarial do Centro no Google Maps que pudesse ser atribuída com segurança.</p><p>A acessibilidade física da sede deve ser confirmada conforme a necessidade de cada visitante.</p><a className="button ghost" href="/documentos/guia-caminho-dos-butiazais.pdf#page=42" target="_blank" rel="noreferrer">Ver a página de visitação no guia</a></div></Section>
+</main>}

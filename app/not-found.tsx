@@ -1,0 +1,1 @@
+import Link from "../components/document-link";export default function NotFound(){return <main className="not-found"><p className="eyebrow">Erro 404</p><h1>Essa trilha não leva a lugar nenhum — ainda.</h1><p>Volte ao caminho e continue explorando as histórias de Imbituba.</p><Link className="button primary" href="/">Voltar ao início</Link></main>}
