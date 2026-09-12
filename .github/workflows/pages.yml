@@ -1,0 +1,49 @@
+name: Publicar Mariscão no GitHub Pages
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Configurar Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Verificar endereço raiz
+        env:
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: node -e "if(new URL(process.env.BASE_URL).pathname.replaceAll('/','')) throw new Error('Use um repositorio organizacao.github.io ou dominio proprio na raiz; subpastas nao sao suportadas nesta entrega.')"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
+      - run: npm test
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/client
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
