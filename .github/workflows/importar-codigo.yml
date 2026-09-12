@@ -1,0 +1,30 @@
+name: Importar codigo revisado
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - CODIGO-FONTE-GITHUB.zip
+      - .github/workflows/importar-codigo.yml
+permissions:
+  contents: read
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Extrair codigo validado
+        run: |
+          if [ -f package.json ]; then
+            echo "Codigo ja importado; nada a substituir."
+            exit 0
+          fi
+          echo '7a43b8b555af0fb77ac7f99e8dfc53b4c08876d0d3d6399081df61a1a23a5012  CODIGO-FONTE-GITHUB.zip' | sha256sum --check --strict
+          unzip -n CODIGO-FONTE-GITHUB.zip -x '.github/*'
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add app components content public scripts tests .env.example .gitignore eslint.config.mjs MANUTENCAO.md next-env.d.ts next.config.ts package-lock.json package.json postcss.config.mjs README.md tsconfig.json vite.config.ts
+          git commit -m "Importar codigo revisado do portal"
+          git push origin HEAD:main
