@@ -1,0 +1,75 @@
+name: Integrar e publicar Butiazinho
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/atualizar-butiazinho.yml]
+permissions:
+  contents: read
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      sha: ${{ steps.update.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+      - id: update
+        name: Aplicar somente os nove arquivos revisados
+        run: |
+          if [ -f components/butiazinho-feature.tsx ]; then
+            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git diff --quiet c2f8ea092ffb9e8b035129a5a45b0f410fc6ba46 HEAD -- MANUTENCAO.md app/layout.tsx app/page.tsx app/educacao-ambiental/page.tsx app/butiazinho.css components/butiazinho-feature.tsx content/butiazinho.ts tests/static-export.test.mjs public/images/official/butiazinho-divulgacao.jpg
+          echo '40f4b5395d8496edaf3f326fa45d6dbd1b0b7a090286da1975ba10f22a4c9932  ATUALIZACAO-BUTIAZINHO.zip' | sha256sum --check --strict
+          unzip -o ATUALIZACAO-BUTIAZINHO.zip
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add MANUTENCAO.md app/layout.tsx app/page.tsx app/educacao-ambiental/page.tsx app/butiazinho.css components/butiazinho-feature.tsx content/butiazinho.ts tests/static-export.test.mjs public/images/official/butiazinho-divulgacao.jpg
+          git commit -m "Integrar Butiazinho com carregamento sob clique e testes"
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  build:
+    needs: importar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.importar.outputs.sha }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Configurar Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
+      - run: npm test
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/client
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
