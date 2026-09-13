@@ -3,6 +3,7 @@ import { Manrope, Source_Serif_4 } from "next/font/google";
 import "./globals.css";
 import "./minimal.css";
 import "./refinement.css";
+import "./butiazinho.css";
 import { SiteHeader } from "../components/site-header";
 import { Footer } from "../components/footer";
 import { MotionEffects } from "../components/motion-effects";

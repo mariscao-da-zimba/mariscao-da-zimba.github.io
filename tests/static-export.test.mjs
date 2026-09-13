@@ -28,3 +28,14 @@ test('redirecionamentos antigos têm destino canônico',async()=>{
   assert.match(html,/\/projetos\/sonho-de-liberdade\//);
   await access(join(root,'caminho-dos-butiazais/trilha-do-pontal-do-catalao/index.html'));
 });
+test('Butiázinho tem acesso direto sem carregar o jogo antes do clique',async()=>{
+  for(const route of ['', 'educacao-ambiental']){
+    const html=await readFile(join(root,route,'index.html'),'utf8');
+    assert.match(html,/id="butiazinho"/);
+    assert.match(html,/href="https:\/\/butiazinho-games\.github\.io\/Butiazinho-The-Game\/"/);
+    assert.match(html,/href="https:\/\/www\.instagram\.com\/p\/DaBCHBClq-K\/"/);
+    assert.match(html,/butiazinho-divulgacao\.jpg/);
+    assert.doesNotMatch(html,/<iframe[^>]+butiazinho-games/);
+    assert.match(html,/aria-controls="butiazinho-player"/);
+  }
+});

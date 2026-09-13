@@ -1,5 +1,11 @@
 # Manutenção da edição GitHub Pages
 
+## Butiázinho — integração de 12/09/2026
+
+Home e Educação Ambiental usam components/butiazinho-feature.tsx, com dados em content/butiazinho.ts e estilos isolados em app/butiazinho.css. O endereço fornecido tinyurl.com/butiazinho foi resolvido e confirmado como https://butiazinho-games.github.io/Butiazinho-The-Game/. O cartaz foi fornecido pelo proprietário (188 KB, sem ampliar nem alterar a imagem). O link do Instagram foi fornecido pelo proprietário; a publicação não pôde ser lida automaticamente, portanto não foram extraídas afirmações dela.
+
+O jogo externo só é carregado após clique, em iframe isolado com allow-scripts e allow-same-origin (domínio diferente do portal). Não recebe câmera, microfone, localização, popups nem navegação do portal. Fechar remove o iframe e encerra a sessão. Existe link direto de fallback, funcional mesmo sem JavaScript. Não hospedar ou executar o código do jogo no contexto do portal. O funcionamento interno do jogo depende do site externo; não prometer acessibilidade total do canvas ou execução offline.
+
 ## Diferenças intencionais
 
 - `vite.config.ts` usa apenas Vinext. Não depende de autenticação ChatGPT, conta Sites, Cloudflare Tunnel, Worker ou serviços do Windows.
