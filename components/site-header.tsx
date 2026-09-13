@@ -18,17 +18,18 @@ export function SiteHeader() {
     if(!open)return;
     const onKeyDown=(event:KeyboardEvent)=>{
       if(event.key==="Escape"){setOpen(false);toggleRef.current?.focus();return}
-      if(event.key!=="Tab")return;
-      const focusable=[toggleRef.current,...Array.from(navRef.current?.querySelectorAll<HTMLAnchorElement>("a")||[])].filter((item):item is HTMLButtonElement | HTMLAnchorElement=>item !== null);
-      const first=focusable[0];const last=focusable.at(-1);
-      if(event.shiftKey&&document.activeElement===first){event.preventDefault();last?.focus()}
-      else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first?.focus()}
     };
     const onPointerDown=(event:PointerEvent)=>{if(!headerRef.current?.contains(event.target as Node))setOpen(false)};
+    // A navigation disclosure is not a modal: Tab must be able to leave it.
+    const onFocusIn=(event:FocusEvent)=>{if(!headerRef.current?.contains(event.target as Node))setOpen(false)};
+    const desktop=window.matchMedia("(min-width: 1181px)");
+    const onBreakpoint=()=>{if(desktop.matches)setOpen(false)};
     document.addEventListener("keydown",onKeyDown);
     document.addEventListener("pointerdown",onPointerDown);
+    document.addEventListener("focusin",onFocusIn);
+    desktop.addEventListener("change",onBreakpoint);
     const focusFrame=requestAnimationFrame(()=>navRef.current?.querySelector<HTMLAnchorElement>("a")?.focus());
-    return()=>{document.removeEventListener("keydown",onKeyDown);document.removeEventListener("pointerdown",onPointerDown);cancelAnimationFrame(focusFrame)};
+    return()=>{document.removeEventListener("keydown",onKeyDown);document.removeEventListener("pointerdown",onPointerDown);document.removeEventListener("focusin",onFocusIn);desktop.removeEventListener("change",onBreakpoint);cancelAnimationFrame(focusFrame)};
   },[open]);
 
   const current=(href:string)=>href==="/"?pathname==="/":pathname===href||pathname.startsWith(`${href}/`);

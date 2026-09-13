@@ -24,3 +24,27 @@
 .butiazinho-player iframe{display:block;width:100%;height:min(780px,85svh);min-height:520px;border:1px solid #173e4344;border-radius:12px;background:#4ec0ca}
 @media(max-width:700px){.butiazinho-intro{grid-template-columns:1fr}.butiazinho-poster img{max-height:390px}.butiazinho-copy .actions{align-items:stretch}.butiazinho-copy .actions>a,.butiazinho-copy .actions>button{justify-content:center;text-align:center;white-space:normal}.butiazinho-player-heading{align-items:flex-start;flex-direction:column}.butiazinho-player iframe{min-height:480px}.butiazinho-feature{scroll-margin-top:80px}}
 @media(prefers-reduced-motion:reduce){.butiazinho-feature .button{transition:none;transform:none}}
+
+/* Keep the playful poster within the portal's quieter coastal palette. */
+.butiazinho-feature{background:#e7eee3;padding-inline:var(--page-gutter);padding-block:64px;scroll-margin-top:0}
+.butiazinho-intro{grid-template-columns:minmax(0,.65fr) minmax(0,1.35fr);gap:clamp(32px,6vw,80px)}
+.butiazinho-poster img{max-height:430px;border-radius:12px;box-shadow:0 12px 32px #173e4310}
+.butiazinho-copy h2{font-size:clamp(2.35rem,4.2vw,4.1rem);line-height:1.12;color:var(--coast)}
+.butiazinho-copy>p:not(.eyebrow){font-size:1rem}
+.butiazinho-copy>p.butiazinho-credit{font-size:.875rem}
+.butiazinho-copy>p.butiazinho-note{font-size:.8125rem;color:#435c56}
+.butiazinho-controls{list-style:none;display:flex;flex-wrap:wrap;gap:12px 22px;padding:0;margin:22px 0;color:#38584f;font-size:.8125rem}
+.butiazinho-controls li{display:flex;align-items:center;gap:9px}
+.butiazinho-controls svg{width:18px;height:18px}
+.butiazinho-controls kbd{font:inherit;font-size:.75rem;padding:3px 6px;border:1px solid #38584f55;border-bottom-width:2px;border-radius:4px;background:#ffffff75}
+.butiazinho-instagram{min-height:44px}
+.butiazinho-copy .actions{margin:24px 0 20px;gap:14px 22px}
+.butiazinho-player-heading .button{color:var(--coast)}
+@media(max-width:700px){
+  .butiazinho-feature{padding-block:52px}
+  .butiazinho-intro{grid-template-columns:1fr;gap:28px}
+  .butiazinho-poster img{max-height:340px}
+  .butiazinho-copy h2{font-size:2.4rem}
+  .butiazinho-copy .actions{flex-direction:column;align-items:stretch}
+  .butiazinho-copy .button.text{justify-content:center}
+}

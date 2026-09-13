@@ -2,7 +2,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { ArrowUpRight, Gamepad2, X } from "lucide-react";
+import { ArrowUpRight, Gamepad2, Keyboard, Smartphone, X } from "lucide-react";
 import { butiazinho } from "../content/butiazinho";
 
 export function ButiazinhoFeature() {
@@ -28,6 +28,10 @@ export function ButiazinhoFeature() {
           <h2 id="butiazinho-title">Conheça o {butiazinho.title}</h2>
           <p>Um pequeno personagem, um grande desafio. Toque, clique ou use a barra de espaço para voar entre os obstáculos e tentar superar seu recorde.</p>
           <p className="butiazinho-credit">Jogo criado por {butiazinho.author}. Jogue no navegador, no celular ou no computador.</p>
+          <ul className="butiazinho-controls" aria-label="Como jogar">
+            <li><Keyboard aria-hidden="true" /><span><kbd>Espaço</kbd> para voar</span></li>
+            <li><Smartphone aria-hidden="true" /><span>Toque na tela</span></li>
+          </ul>
           <div className="actions">
             <button ref={launchButton} type="button" className="button primary" aria-expanded={playing}
               aria-controls="butiazinho-player" onClick={() => setPlaying(true)}>
