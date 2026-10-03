@@ -11,6 +11,7 @@ const socialLinks = [
   ["Facebook do Caminho dos Butiazais", site.social.facebookCaminho, "facebook"],
   ["Facebook da Rota Açoriana", site.social.facebookRota, "facebook"],
   ["YouTube do Caminho dos Butiazais", site.social.youtube, "youtube"],
+  ["YouTube do Mariscão da Zimba", site.social.youtubeMariscao, "youtube"],
   ["Linktree do Caminho dos Butiazais", site.social.linktree, "linktree"],
   ["WhatsApp do Mariscão da Zimba", site.social.whatsapp, "whatsapp"],
 ] as const;

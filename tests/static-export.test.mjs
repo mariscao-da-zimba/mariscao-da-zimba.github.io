@@ -76,6 +76,40 @@ test('Butiázinho tem acesso direto sem carregar o jogo antes do clique',async()
   }
 });
 
+test('homenagem tem capa local e acesso sem JavaScript, sem player inicial', async () => {
+  const home = await readFile(join(root, 'index.html'), 'utf8');
+  const acervo = await readFile(join(root, 'acervo/index.html'), 'utf8');
+  assert.match(home, /id="homenagem"/);
+  assert.match(home, /href="https:\/\/www\.youtube\.com\/watch\?v=_wfX7fFoig0"/);
+  assert.match(home, /homenagem-imbituba-youtube\.jpg/);
+  assert.doesNotMatch(home, /<iframe[^>]+_wfX7fFoig0/);
+  assert.match(acervo, /href="\/#homenagem"/);
+  assert.ok((await stat(join(root, 'images/official/homenagem-imbituba-youtube.jpg'))).size > 0);
+});
+
+test('três músicas verificadas na Home e Cultura, com capa local e fallback sem player inicial', async () => {
+  const ids = ['EczZf3JCFgY', 'gq3BJ_1M11k', 'BcA7YE2Vt9s'];
+  for (const route of ['', 'cultura']) {
+    const html = withoutScripts(await readFile(join(root, route, 'index.html'), 'utf8'));
+    assert.match(html, /id="musicas-da-mare"/);
+    for (const id of ids) {
+      assert.ok(html.includes(`href="https://www.youtube.com/shorts/${id}"`));
+      assert.ok(html.includes(`aria-controls="musicas-da-mare-${id}"`));
+      assert.ok(html.includes(`turma-da-mare-${id}.jpg`));
+      assert.ok((await stat(join(root, `images/official/turma-da-mare-${id}.jpg`))).size > 0);
+      assert.ok(!tags(html, 'iframe').some((frame) => frame.src?.includes(id)));
+    }
+    assert.equal(tags(html, 'button').filter((button) => button.class === 'music-play').length, 3);
+    assert.ok(html.includes('Vem brincar com a Turma do Mar.'));
+  }
+  const home = withoutScripts(await readFile(join(root, 'index.html'), 'utf8'));
+  assert.ok(home.indexOf('id="territorio"') < home.indexOf('id="homenagem"'));
+  assert.ok(home.indexOf('id="homenagem"') < home.indexOf('id="musicas-da-mare"'));
+  assert.ok(home.indexOf('id="musicas-da-mare"') < home.indexOf('id="butiazinho"'));
+  const project = await readFile(join(root, 'projetos/turma-da-mare/index.html'), 'utf8');
+  assert.match(project, /href="\/cultura#musicas-da-mare"/);
+});
+
 test('links internos e âncoras têm destinos reais, sem botões-link vazios', async () => {
   const pages = await exportedPages();
   const pagesByRoute = new Map(pages.map((page) => [normalizeRoute(page.url.pathname), page]));

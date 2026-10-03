@@ -145,8 +145,9 @@ export const projects: Project[] = [
     resources: [
       { label: "Ler o registro de 2026", href: "https://www.jornalpopularcatarinense.com.br/turma-da-mare-transforma-cultura-turismo-e-consciencia-ambiental-em-espetaculo-de-cidadania/", external: true },
       { label: "Conhecer a educação ambiental", href: "/educacao-ambiental" },
+      { label: "Ouvir as músicas da Turma da Maré", href: "/cultura#musicas-da-mare" },
     ],
-    sources: ["turma-da-mare-2026"],
+    sources: ["turma-da-mare-2026", "musica-turma-mare", "musica-rosa-ouro", "musica-turma-mar"],
   },
   {
     slug: "sonho-de-liberdade",

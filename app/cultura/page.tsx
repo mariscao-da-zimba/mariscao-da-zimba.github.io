@@ -2,6 +2,7 @@ import Link from "../../components/document-link";
 import { ArrowUpRight } from "lucide-react";
 import { PageHero, Section, SectionTitle } from "../../components/ui";
 import { createPageMetadata } from "../../content/metadata";
+import { MusicVideos } from "../../components/music-videos";
 
 export const metadata=createPageMetadata({title:"Cultura",description:"A formação cultural plural de Imbituba em memória, práticas e saberes.",path:"/cultura"});
 const themes=[
@@ -19,6 +20,7 @@ const themes=[
 
 export default function Cultura(){return <main>
   <PageHero kicker="Muitas raízes · Um território" title="A cultura de Imbituba é plural" intro="Presenças açorianas, afro-brasileiras, indígenas, pesqueiras e populares — sem reduzir a história a uma única origem." tone="blue"/>
+  <MusicVideos />
   <Section><SectionTitle kicker="Temas documentados" title="Saberes que atravessam o tempo"/><div className="theme-list">{themes.map(([title,text],index)=><article key={title}><span>{String(index+1).padStart(2,"0")}</span><div><h2>{title}</h2><p>{text}</p>{title==="Gastronomia e butiá"&&<a href="https://leis.alesc.sc.gov.br/ato-normativo/22514" target="_blank" rel="noreferrer">Abrir Lei nº 19.013/2024 <ArrowUpRight aria-hidden="true"/></a>}</div></article>)}</div></Section>
   <Section className="sand split"><SectionTitle kicker="Continue explorando" title="A cultura também está no percurso"/><div className="resource-links"><Link href="/projetos">Conhecer os projetos <ArrowUpRight aria-hidden="true"/></Link><Link href="/memoria">Ler histórias do território <ArrowUpRight aria-hidden="true"/></Link><Link href="/caminho-dos-butiazais">Explorar os 14 pontos <ArrowUpRight aria-hidden="true"/></Link></div></Section>
 </main>}

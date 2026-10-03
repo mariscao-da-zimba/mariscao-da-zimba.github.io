@@ -1,8 +1,11 @@
+/* eslint-disable @next/next/no-img-element -- official thumbnail hosted locally with fixed dimensions and lazy loading */
 import Link from "../../components/document-link";
 import { ArrowUpRight, FileBadge, Images, PlaySquare, ScrollText } from "lucide-react";
 import { PageHero, Section, SectionTitle } from "../../components/ui";
 import { site } from "../../content/site";
 import { createPageMetadata } from "../../content/metadata";
+import { tribute } from "../../content/tribute";
+import { musicVideos } from "../../content/music-videos";
 
 export const metadata=createPageMetadata({title:"Acervo",description:"Fotos, documentos, vídeos e publicações verificadas do Mariscão da Zimba.",path:"/acervo"});
 
@@ -11,6 +14,8 @@ export default function Acervo(){return <main>
   <Section>
     <SectionTitle kicker="Seleção disponível" title="Conheça os registros" intro="O acervo cresce à medida que novos materiais recebem identificação, crédito e autorização."/>
     <div className="archive-grid">
+      <Link className="archive-card tribute-archive-card" href="/#homenagem"><img src={tribute.image} alt="" width={tribute.imageWidth} height={tribute.imageHeight} loading="lazy" decoding="async"/><span>Vídeo de homenagem</span><h2>{tribute.heading}</h2><p>{tribute.title}. Vídeo compartilhado pelo canal {tribute.channel}.</p><b>Assistir à homenagem <ArrowUpRight aria-hidden="true"/></b></Link>
+      <Link className="archive-card tribute-archive-card" href="/cultura#musicas-da-mare"><img src={musicVideos[0].image} alt="" width="1280" height="720" loading="lazy" decoding="async"/><span>Música · 3 Shorts</span><h2>Canções da Turma da Maré</h2><p>Três vídeos musicais criados por Célio de Oliveira e publicados no canal Mariscao.</p><b>Ouvir e assistir <ArrowUpRight aria-hidden="true"/></b></Link>
       <a className="archive-card" href="/documentos/guia-caminho-dos-butiazais.pdf" target="_blank" rel="noreferrer"><ScrollText aria-hidden="true"/><span>Publicação · 2025</span><h2>Guia Caminho dos Butiazais</h2><p>Publicação oficial com o roteiro dos 14 pontos, fotografias, referências e orientações de visitação.</p><b>Abrir PDF <ArrowUpRight aria-hidden="true"/></b></a>
       <a className="archive-card" href="https://www.youtube.com/watch?v=pAz-L5ygrUc" target="_blank" rel="noreferrer"><PlaySquare aria-hidden="true"/><span>Vídeo · 2025</span><h2>Conhecendo o Caminho dos Butiazais</h2><p>Documentário oficial publicado pelo canal do projeto e realizado com recursos da Lei Paulo Gustavo.</p><b>Assistir no YouTube <ArrowUpRight aria-hidden="true"/></b></a>
       <Link className="archive-card" href="/caminho-dos-butiazais"><Images aria-hidden="true"/><span>Fotografias do guia</span><h2>Galeria dos 14 pontos</h2><p>Imagens do guia organizadas por paisagem, comunidade, trilha e lugar de memória.</p><b>Explorar as imagens <ArrowUpRight aria-hidden="true"/></b></Link>

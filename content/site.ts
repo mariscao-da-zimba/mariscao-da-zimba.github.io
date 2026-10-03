@@ -20,6 +20,7 @@ export const site = {
     facebookCaminho: process.env.NEXT_PUBLIC_FACEBOOK_CAMINHO || "https://www.facebook.com/100066703401695/",
     facebookRota: process.env.NEXT_PUBLIC_FACEBOOK_ROTA || "https://www.facebook.com/rotaacoriana",
     youtube: process.env.NEXT_PUBLIC_YOUTUBE || "https://www.youtube.com/@CaminhodosButiazais",
+    youtubeMariscao: "https://www.youtube.com/@mariscaodazimba",
     linktree: process.env.NEXT_PUBLIC_LINKTREE || "https://linktr.ee/butiazais",
     instagramPessoal: process.env.NEXT_PUBLIC_INSTAGRAM_PESSOAL || "https://www.instagram.com/celiomariscao/",
   },

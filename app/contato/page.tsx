@@ -28,6 +28,7 @@ export default function Contato() {
           <a href={site.social.facebookCaminho} target="_blank" rel="noreferrer"><span aria-hidden="true"><SocialIcon name="facebook"/></span> Facebook do Caminho</a>
           <a href={site.social.facebookRota} target="_blank" rel="noreferrer"><span aria-hidden="true"><SocialIcon name="facebook"/></span> Facebook da Rota Açoriana</a>
           <a href={site.social.youtube} target="_blank" rel="noreferrer"><span aria-hidden="true"><SocialIcon name="youtube"/></span> YouTube do Caminho</a>
+          <a href={site.social.youtubeMariscao} target="_blank" rel="noreferrer"><span aria-hidden="true"><SocialIcon name="youtube"/></span> YouTube do Mariscão · músicas e homenagem</a>
           <a href={site.social.linktree} target="_blank" rel="noreferrer"><span aria-hidden="true"><SocialIcon name="linktree"/></span> Todos os links oficiais do Caminho</a>
         </div>
       </div>
