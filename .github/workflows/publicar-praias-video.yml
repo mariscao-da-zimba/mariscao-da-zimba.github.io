@@ -1,0 +1,123 @@
+name: Integrar e publicar praias em vídeo
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      sha: ${{ steps.update.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - id: update
+        name: Conferir e integrar os 28 arquivos de praias em vídeo
+        shell: bash
+        run: |
+          set -euo pipefail
+          package=PRAIAS-EM-VIDEO-2026-10-04.zip
+          echo 'f888af741c9ce98eb024ade91edabc8a35d58e1669325aba58e8a3868b793542  PRAIAS-EM-VIDEO-2026-10-04.zip' | sha256sum --check --strict
+          files=(
+            MANUTENCAO.md
+            PRAIAS-EM-VIDEO-2026-10-04.md
+            app/acervo/page.tsx
+            app/contato/page.tsx
+            app/memoria/page.tsx
+            app/page.tsx
+            app/praias-em-video/page.tsx
+            app/privacidade/page.tsx
+            app/refinement.css
+            app/sitemap.ts
+            app/visite/page.tsx
+            components/coastal-videos.tsx
+            components/footer.tsx
+            content/coastal-videos.ts
+            content/site.ts
+            content/sources.ts
+            scripts/finalize-pages.mjs
+            tests/static-export.test.mjs
+            public/images/official/praias-4k8RN1PzH_s.jpg
+            public/images/official/praias-6OJEfC62yEk.jpg
+            public/images/official/praias-7OZfE3Vd0ug.jpg
+            public/images/official/praias-8FXeRXc2isc.jpg
+            public/images/official/praias-AYEPmTczkL4.jpg
+            public/images/official/praias-Kd3Xj51kLxU.jpg
+            public/images/official/praias-TBnZ45s-HkY.jpg
+            public/images/official/praias-jF7cdQ1up5o.jpg
+            public/images/official/praias-kPAsFT4n0mc.jpg
+            public/images/official/praias-u0b6fvlLgtM.jpg
+          )
+          # Validate the complete archive manifest before reading or extracting it.
+          unzip -Z1 "$package" | sort > "$RUNNER_TEMP/praias-archive.txt"
+          printf '%s\n' "${files[@]}" | sort > "$RUNNER_TEMP/praias-expected.txt"
+          diff -u "$RUNNER_TEMP/praias-expected.txt" "$RUNNER_TEMP/praias-archive.txt"
+          all_current=true
+          for file in "${files[@]}"; do
+            if [ ! -f "$file" ] || ! unzip -p "$package" "$file" | cmp -s "$file" -; then
+              all_current=false
+              break
+            fi
+          done
+          if [ "$all_current" = true ]; then
+            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Refuse to overwrite intervening edits in the exact target files.
+          git diff --quiet a3902769adb9f95c4e0c53393e138361c19dcf2d HEAD -- "${files[@]}"
+          unzip -o "$package" "${files[@]}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "${files[@]}"
+          git commit -m "Praias em vídeo com seleção da Praia do Porto e galeria costeira"
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  build:
+    needs: importar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.importar.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Configurar Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Verificar endereço raiz
+        env:
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: node -e "if(new URL(process.env.BASE_URL).pathname.replaceAll('/','')) throw new Error('Use um repositorio organizacao.github.io ou dominio proprio na raiz; subpastas nao sao suportadas nesta entrega.')"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
+      - run: npm test
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/client
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
