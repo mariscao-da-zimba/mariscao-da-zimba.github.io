@@ -30,7 +30,7 @@ function exportedPages() {
   exportPromise ??= (async () => {
     const xml = await readFile(join(root, 'sitemap.xml'), 'utf8');
     const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(([, loc]) => new URL(decodeHtml(loc)));
-    assert.equal(urls.length, 42, 'O portal precisa preservar suas 42 páginas');
+    assert.equal(urls.length, 43, 'O portal precisa preservar as 42 páginas e acrescentar a galeria de praias');
     assert.equal(new Set(urls.map((url) => normalizeRoute(url.pathname))).size, urls.length, 'Rotas duplicadas no sitemap');
     return Promise.all(urls.map(async (url) => {
       const html = await readFile(join(localFile(url.pathname), 'index.html'), 'utf8');
@@ -39,10 +39,15 @@ function exportedPages() {
   })();
   return exportPromise;
 }
-test('42 páginas exportadas com recursos locais existentes',async()=>{
+test('43 páginas exportadas com recursos locais existentes e as rotas anteriores preservadas',async()=>{
   const xml=await readFile(join(root,'sitemap.xml'),'utf8');
   const routes=[...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>new URL(m[1]).pathname);
-  assert.equal(routes.length,42);
+  assert.equal(routes.length,43);
+  const mainRoutes=['/','/sobre','/caminho-dos-butiazais','/projetos','/cultura','/memoria','/educacao-ambiental','/agenda','/acervo','/visite','/contato','/fontes','/privacidade','/acessibilidade','/praias-em-video'];
+  const normalizedRoutes=routes.map(normalizeRoute);
+  for(const route of mainRoutes) assert.ok(normalizedRoutes.includes(route),`Página principal ausente: ${route}`);
+  assert.equal(normalizedRoutes.filter(route=>route.startsWith('/projetos/')).length,14,'Preservar os 14 projetos');
+  assert.equal(normalizedRoutes.filter(route=>route.startsWith('/caminho-dos-butiazais/')).length,14,'Preservar os 14 pontos do Caminho');
   const assets=new Set();
   for(const route of routes){
     const html=await readFile(join(root,route,'index.html'),'utf8');
@@ -108,6 +113,57 @@ test('três músicas verificadas na Home e Cultura, com capa local e fallback se
   assert.ok(home.indexOf('id="musicas-da-mare"') < home.indexOf('id="butiazinho"'));
   const project = await readFile(join(root, 'projetos/turma-da-mare/index.html'), 'utf8');
   assert.match(project, /href="\/cultura#musicas-da-mare"/);
+});
+
+test('Praia do Porto tem seleção própria na Home e dez vídeos na galeria, com capas locais e acesso sem player inicial', async () => {
+  const portoIds = ['TBnZ45s-HkY', '7OZfE3Vd0ug', 'AYEPmTczkL4'];
+  const otherIds = ['Kd3Xj51kLxU', 'kPAsFT4n0mc', 'u0b6fvlLgtM', 'jF7cdQ1up5o', '8FXeRXc2isc', '4k8RN1PzH_s', '6OJEfC62yEk'];
+  const allIds = [...portoIds, ...otherIds];
+  const home = withoutScripts(await readFile(join(root, 'index.html'), 'utf8'));
+  const gallery = withoutScripts(await readFile(join(root, 'praias-em-video/index.html'), 'utf8'));
+
+  for (const [label, html, expectedIds] of [['Home', home, portoIds], ['Galeria', gallery, allIds]]) {
+    const playButtons = tags(html, 'button').filter((button) => button.class?.split(/\s+/).includes('coastal-play'));
+    assert.equal(playButtons.length, expectedIds.length, `${label}: quantidade de vídeos costeiros`);
+    for (const id of expectedIds) {
+      assert.ok(tags(html, 'a').some((link) => link.href === `https://www.youtube.com/shorts/${id}`),
+        `${label}: acesso direto ao vídeo ${id}`);
+      assert.ok(tags(html, 'img').some((image) => image.src === `/images/official/praias-${id}.jpg`),
+        `${label}: capa local do vídeo ${id}`);
+      const control = playButtons.find((button) => button['aria-controls']?.endsWith(`-${id}`));
+      assert.ok(control, `${label}: botão identificado do vídeo ${id}`);
+      assert.ok(control['aria-label']?.trim(), `${label}: nome acessível do vídeo ${id}`);
+      assert.ok(html.includes(`id="${control['aria-controls']}"`), `${label}: destino real do controle ${id}`);
+      assert.ok(!tags(html, 'iframe').some((frame) => frame.src?.includes(id)),
+        `${label}: o vídeo ${id} não deve carregar antes do clique`);
+    }
+  }
+
+  assert.match(home, /id="praia-do-porto"/);
+  assert.ok(home.indexOf('class="home-route"') >= 0, 'Preservar o roteiro na Home');
+  assert.ok(home.indexOf('class="home-projects"') >= 0, 'Preservar os projetos na Home');
+  assert.ok(home.indexOf('class="home-route"') < home.indexOf('id="praia-do-porto"'),
+    'Seleção do Porto depois do Caminho, sem misturar as músicas');
+  assert.ok(home.indexOf('id="praia-do-porto"') < home.indexOf('class="home-projects"'),
+    'Seleção do Porto antes dos projetos');
+  for (const id of otherIds) {
+    assert.ok(!tags(home, 'a').some((link) => link.href === `https://www.youtube.com/shorts/${id}`),
+      `Home enxuta: deixar o vídeo ${id} na página dedicada`);
+  }
+  for (const id of allIds) {
+    assert.ok((await stat(join(root, `images/official/praias-${id}.jpg`))).size > 0,
+      `Capa ausente ou vazia: ${id}`);
+  }
+});
+
+test('galeria de praias está conectada à Home, Acervo, Memória e Visite', async () => {
+  for (const route of ['', 'acervo', 'memoria', 'visite']) {
+    const html = withoutScripts(await readFile(join(root, route, 'index.html'), 'utf8'));
+    assert.ok(tags(html, 'a').some((link) => {
+      const url = new URL(link.href, 'http://localhost');
+      return url.origin === 'http://localhost' && normalizeRoute(url.pathname) === '/praias-em-video';
+    }), `${route || 'Home'}: acesso à galeria de praias`);
+  }
 });
 
 test('links internos e âncoras têm destinos reais, sem botões-link vazios', async () => {

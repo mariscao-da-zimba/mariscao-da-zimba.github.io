@@ -7,7 +7,8 @@ const publicUrl = new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:
 if (publicUrl.pathname !== '/') throw new Error('Esta entrega exige hospedagem na raiz do dominio.');
 const pageFiles = (await readdir(root,{recursive:true})).filter(file=>file.endsWith('.html') && file!=='404.html' && !file.replaceAll('\\','/').endsWith('/index.html'));
 const paths = pageFiles.map(file=>file==='index.html'?'/':'/'+file.replaceAll('\\','/').replace(/\.html$/, ''));
-if (paths.length !== 42) throw new Error('Exportacao incompleta: esperadas 42 paginas, encontradas '+paths.length);
+if (paths.length !== 43) throw new Error('Exportacao incompleta: esperadas 43 paginas, encontradas '+paths.length);
+if (!paths.includes('/praias-em-video')) throw new Error('Exportacao incompleta: galeria de praias ausente.');
 const xml = '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+paths.map(path=>'<url><loc>'+new URL(path,publicUrl).href+'</loc></url>').join('')+'</urlset>';
 await writeFile(join(root,'sitemap.xml'),xml);
 await writeFile(join(root,'robots.txt'),'User-agent: *\n'+(publicUrl.hostname==='localhost'?'Disallow: /':'Allow: /')+'\nSitemap: '+new URL('/sitemap.xml',publicUrl).href+'\n');
@@ -30,4 +31,4 @@ for (const path of paths) {
   await access(join(root,path,'index.html'));
 }
 await access(join(root,'404.html'));
-console.log('Exportação verificada: 42 páginas, 2 redirecionamentos, 404, sitemap e robots.');
+console.log('Exportação verificada: 43 páginas, 2 redirecionamentos, 404, sitemap e robots.');

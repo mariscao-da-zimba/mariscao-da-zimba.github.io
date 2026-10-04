@@ -12,6 +12,7 @@ const socialLinks = [
   ["Facebook da Rota Açoriana", site.social.facebookRota, "facebook"],
   ["YouTube do Caminho dos Butiazais", site.social.youtube, "youtube"],
   ["YouTube do Mariscão da Zimba", site.social.youtubeMariscao, "youtube"],
+  ["YouTube do Mariscão · praias de Imbituba", site.social.youtubePraias, "youtube"],
   ["Linktree do Caminho dos Butiazais", site.social.linktree, "linktree"],
   ["WhatsApp do Mariscão da Zimba", site.social.whatsapp, "whatsapp"],
 ] as const;

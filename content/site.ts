@@ -1,3 +1,4 @@
+import { coastalChannel } from "./coastal-videos";
 const phone = process.env.NEXT_PUBLIC_CONTACT_PHONE || "(48) 99608-6600";
 const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP || "https://wa.me/5548996086600";
 const email = process.env.NEXT_PUBLIC_CONTACT_EMAIL || process.env.CONTACT_EMAIL || "celiomariscao@gmail.com";
@@ -21,6 +22,7 @@ export const site = {
     facebookRota: process.env.NEXT_PUBLIC_FACEBOOK_ROTA || "https://www.facebook.com/rotaacoriana",
     youtube: process.env.NEXT_PUBLIC_YOUTUBE || "https://www.youtube.com/@CaminhodosButiazais",
     youtubeMariscao: "https://www.youtube.com/@mariscaodazimba",
+    youtubePraias: coastalChannel.url,
     linktree: process.env.NEXT_PUBLIC_LINKTREE || "https://linktr.ee/butiazais",
     instagramPessoal: process.env.NEXT_PUBLIC_INSTAGRAM_PESSOAL || "https://www.instagram.com/celiomariscao/",
   },

@@ -1,5 +1,19 @@
 # Manutenção da edição GitHub Pages
 
+## Praias em vídeo — 04/10/2026
+
+Base publicada: `a3902769adb9f95c4e0c53393e138361c19dcf2d`. O upgrade audiovisual de 03/10 foi publicado e validado; a nota de login abaixo registra a preparação anterior, não o estado atual.
+
+Canal adicional indicado pelo proprietário: `https://www.youtube.com/@Marisc%C3%A3odazimba-g6m`, nome público “Mariscão da zimba”. Não substituir os canais de músicas/homenagem nem do Caminho. Dez Shorts verificados por listagem pública, oEmbed e páginas oficiais em 04/10/2026. Dados centralizados em `content/coastal-videos.ts`; capas originais de 1280×720 em `public/images/official/praias-<ID>.jpg`, total 1.536.296 bytes, sem alteração dos arquivos.
+
+A Home apresenta somente os três vídeos da Praia do Porto após o Caminho dos Butiazais, com id `praia-do-porto`. `/praias-em-video` reúne os dez em grupos Porto/Outras paisagens. Links em Acervo, Memória, Visite, Contato, rodapé e Fontes. Navegação móvel inicial agora é 2×2. Estilos continuam na camada existente `app/refinement.css`.
+
+`components/coastal-videos.tsx` usa `useMediaPlayback`: escolher um vídeo fecha outro dessa seleção, da homenagem ou das músicas. Não generalizar a regra ao jogo ou documentário antigo. Capas locais; iframe youtube-nocookie somente após clique; referrer de origem preservado; fechar restaura foco; fallback de link sem JavaScript. Imagens verticais originais não devem ser esticadas ou recortadas para esconder créditos.
+
+Não tratar textos e imagens do canal como prova histórica independente. Algumas descrições incluem resíduos editoriais e afirmações sem fonte: as sinopses do portal são curadoria breve, não transcrição. Uso de IA não é declarado nessas dez descrições; não afirmar ausência nem inventar técnica de produção. Autoria informada pelo proprietário. A seleção é estática: novas publicações no canal não aparecem automaticamente.
+
+O exportador/testes agora exigem 43 páginas: preservadas as 42 anteriores e adicionada a galeria. Relatório desta atualização: `PRAIAS-EM-VIDEO-2026-10-04.md`.
+
 ## Upgrade editorial e vídeos — 03/10/2026
 
 O vídeo enviado pelo proprietário está em `https://www.youtube.com/watch?v=_wfX7fFoig0`. Título e canal foram confirmados pelo oEmbed público do YouTube: “— Ponto de Cultura Viva aos 68 anos de emancipação”, canal Mariscao (`@mariscaodazimba`). A apresentação omite apenas o travessão inicial do título. A descrição pública identifica homenagem aos 68 anos de emancipação de Imbituba (1958–2026), realização do Centro e apoio de IA em imagens, edição e composição musical. Duração conferida no player: 3min59. Não apresentar suas imagens artísticas como fotografias documentais. A transcrição automática contém erros de nomes; não copiá-la como texto histórico nem como letra oficial.
@@ -24,7 +38,7 @@ O jogo externo só é carregado após clique, em iframe isolado com allow-script
 
 - `vite.config.ts` usa apenas Vinext. Não depende de autenticação ChatGPT, conta Sites, Cloudflare Tunnel, Worker ou serviços do Windows.
 - `next.config.ts` usa output export e trailingSlash false. Na versão instalada do Vinext, trailingSlash true causa respostas308 durante prerender. NÃO habilitar sem retestar todas as páginas.
-- `scripts/finalize-pages.mjs` converte as páginas `rota.html` em `rota/index.html` para hospedagem estática, gera sitemap a partir das páginas exportadas, robots e manifest. Verifica 42 páginas e prepara dois redirects HTML legados. Não são redirects HTTP308, pois Pages não fornece esse servidor.
+- `scripts/finalize-pages.mjs` converte as páginas `rota.html` em `rota/index.html` para hospedagem estática, gera sitemap a partir das páginas exportadas, robots e manifest. Verifica 43 páginas e prepara dois redirects HTML legados. Não são redirects HTTP308, pois Pages não fornece esse servidor.
 - `components/document-link.tsx` usa links HTML normais. O next/link desta versão espera respostas RSC de servidor que Pages não fornece. Não reintroduzir next/link sem validar navegação num servidor estático puro.
 - Menus, filtros, contato WhatsApp e animações continuam componentes React hidratados.
 - O workflow define NEXT_PUBLIC_SITE_URL a partir do Pages, testa e publica dist/client. Não publica arquivos fontes como site, nem usa os cabeçalhos do antigo Worker. `_headers` não configura o GitHub Pages.
@@ -33,7 +47,7 @@ O jogo externo só é carregado após clique, em iframe isolado com allow-script
 
 Os documentos/fontes continuam os da revisão local. Este preparo não faz nova auditoria histórica ou de todos os links externos. Não inventar horários, cargos, perfis, direitos autorais, números ou reconhecimentos legais. Preservar créditos essenciais e atribuir a Lei Estadual19.013 ao bem cultural geral, sem confundir com moção municipal.
 
-O número42 no validador corresponde a14 páginas principais,14 projetos e14 pontos. Ao acrescentar uma página real, atualizar o teste conscientemente e revisar sitemap.
+O número43 no validador corresponde a15 páginas principais,14 projetos e14 pontos. Ao acrescentar uma página real, atualizar o teste conscientemente e revisar sitemap, preservando as rotas anteriores.
 
 Não há CMS nem edição pública. Alterações são feitas no código/dados e entram no ar após o workflow. O site pode ficar disponível com o notebook desligado depois da publicação, dependendo da disponibilidade e limites do GitHub.
 

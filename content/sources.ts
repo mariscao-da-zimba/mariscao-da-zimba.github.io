@@ -1,5 +1,8 @@
 import type { SourceRef } from "./types";
+import { coastalChannel, coastalVideos } from "./coastal-videos";
 export const sources: SourceRef[] = [
+  {id:"youtube-praias-mariscao",title:"Praias de Imbituba — canal Mariscão da zimba",institution:"Canal indicado pelo proprietário",url:coastalChannel.url,level:"project-material"},
+  ...coastalVideos.map(video=>({id:`praias-${video.videoId}`,title:video.title,institution:coastalChannel.name,url:video.url,level:"project-material" as const})),
   {id:"cultura-viva",title:"Cadastro Nacional de Pontos e Pontões de Cultura",institution:"Ministério da Cultura / Cultura Viva",url:"https://culturaviva.cultura.gov.br/agente/16009841/",level:"official"},
   {id:"camara-2024",title:"Ata da 9ª Sessão Ordinária — entrega da Moção de Congratulação em 1º de abril de 2024",institution:"Câmara Municipal de Imbituba",url:"https://www.imbituba.sc.leg.br/processo-legislativo/sessoes/atas-das-sessoes/2024/ata-da-9a-sessao-ordinaria-01-04-2024.pdf/at_download/file",level:"official"},
   {id:"camara-mocao-2023",title:"Moção nº 21/2023 — Congratulação ao Mariscão da Zimba",institution:"Câmara Municipal de Imbituba",url:"https://www.imbituba.sc.leg.br/proposicoes/Mocoes/0/1/0/5064",level:"official"},
