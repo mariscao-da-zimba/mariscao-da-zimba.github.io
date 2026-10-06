@@ -115,23 +115,34 @@ test('três músicas verificadas na Home e Cultura, com capa local e fallback se
   assert.match(project, /href="\/cultura#musicas-da-mare"/);
 });
 
-test('Praia do Porto tem seleção própria na Home e dez vídeos na galeria, com capas locais e acesso sem player inicial', async () => {
+test('Praia do Porto preserva três vídeos na Home e a galeria reúne 19 vídeos únicos, com capas locais e acesso sem player inicial', async () => {
   const portoIds = ['TBnZ45s-HkY', '7OZfE3Vd0ug', 'AYEPmTczkL4'];
-  const otherIds = ['Kd3Xj51kLxU', 'kPAsFT4n0mc', 'u0b6fvlLgtM', 'jF7cdQ1up5o', '8FXeRXc2isc', '4k8RN1PzH_s', '6OJEfC62yEk'];
+  const newIds = ['w2a_IRQ-jJQ', 'zdlHF75THTs', 'DRqBBZi7-do', 'UMDHWyRfRaE', 'w0h_21dqASc', '-0SKfGn6Qro', 'tUHrzzzO6GA', 'XOwJqbA0ne8', 'PrRtk5_qqCc'];
+  const otherIds = ['Kd3Xj51kLxU', 'kPAsFT4n0mc', 'u0b6fvlLgtM', 'jF7cdQ1up5o', '8FXeRXc2isc', '4k8RN1PzH_s', '6OJEfC62yEk', ...newIds];
   const allIds = [...portoIds, ...otherIds];
+  assert.equal(allIds.length, 19, 'Manter os dez vídeos anteriores e acrescentar os nove novos');
+  assert.equal(new Set(allIds).size, allIds.length, 'IDs de vídeos não podem se repetir');
   const home = withoutScripts(await readFile(join(root, 'index.html'), 'utf8'));
   const gallery = withoutScripts(await readFile(join(root, 'praias-em-video/index.html'), 'utf8'));
+  const hero = gallery.match(/<section\b[^>]*class="page-hero[^"]*"[^>]*>([\s\S]*?)<\/section>/i)?.[1];
+  assert.ok(hero, 'Introdução visível da galeria');
+  const introText = decodeHtml(hero.replace(/<!--[\s\S]*?-->|<[^>]*>/g, '')).replace(/\s+/g, ' ');
+  assert.match(introText, /\b(?:19|dezenove)\s+(?:criações|vídeos)\b/i,
+    'A introdução precisa refletir os 19 vídeos, não a seleção anterior');
 
   for (const [label, html, expectedIds] of [['Home', home, portoIds], ['Galeria', gallery, allIds]]) {
     const playButtons = tags(html, 'button').filter((button) => button.class?.split(/\s+/).includes('coastal-play'));
     assert.equal(playButtons.length, expectedIds.length, `${label}: quantidade de vídeos costeiros`);
+    assert.equal(new Set(playButtons.map((button) => button['aria-controls'])).size, expectedIds.length,
+      `${label}: controles únicos para cada vídeo`);
     for (const id of expectedIds) {
-      assert.ok(tags(html, 'a').some((link) => link.href === `https://www.youtube.com/shorts/${id}`),
-        `${label}: acesso direto ao vídeo ${id}`);
-      assert.ok(tags(html, 'img').some((image) => image.src === `/images/official/praias-${id}.jpg`),
-        `${label}: capa local do vídeo ${id}`);
-      const control = playButtons.find((button) => button['aria-controls']?.endsWith(`-${id}`));
-      assert.ok(control, `${label}: botão identificado do vídeo ${id}`);
+      assert.equal(tags(html, 'a').filter((link) => link.href === `https://www.youtube.com/shorts/${id}`).length, 1,
+        `${label}: acesso direto único ao vídeo ${id}`);
+      assert.equal(tags(html, 'img').filter((image) => image.src === `/images/official/praias-${id}.jpg`).length, 1,
+        `${label}: capa local única do vídeo ${id}`);
+      const controls = playButtons.filter((button) => button['aria-controls']?.endsWith(`-${id}`));
+      assert.equal(controls.length, 1, `${label}: botão único identificado do vídeo ${id}`);
+      const [control] = controls;
       assert.ok(control['aria-label']?.trim(), `${label}: nome acessível do vídeo ${id}`);
       assert.ok(html.includes(`id="${control['aria-controls']}"`), `${label}: destino real do controle ${id}`);
       assert.ok(!tags(html, 'iframe').some((frame) => frame.src?.includes(id)),
@@ -154,6 +165,10 @@ test('Praia do Porto tem seleção própria na Home e dez vídeos na galeria, co
     assert.ok((await stat(join(root, `images/official/praias-${id}.jpg`))).size > 0,
       `Capa ausente ou vazia: ${id}`);
   }
+  const mirimCover = tags(gallery, 'img').find((image) => image.src === '/images/official/praias-zdlHF75THTs.jpg');
+  const mirimHeight = Number(mirimCover?.style?.match(/\bheight\s*:\s*([\d.]+)%/)?.[1]);
+  assert.ok(Math.abs(mirimHeight - (405 / 570 * 100)) < 0.01,
+    'Capa mais larga da Lagoa do Mirim deve reduzir a altura a cerca de 71,05%, preservando título e logo no quadro vertical');
 });
 
 test('galeria de praias está conectada à Home, Acervo, Memória e Visite', async () => {
@@ -164,6 +179,11 @@ test('galeria de praias está conectada à Home, Acervo, Memória e Visite', asy
       return url.origin === 'http://localhost' && normalizeRoute(url.pathname) === '/praias-em-video';
     }), `${route || 'Home'}: acesso à galeria de praias`);
   }
+  const acervo = withoutScripts(await readFile(join(root, 'acervo/index.html'), 'utf8'));
+  const acervoLabels = [...acervo.matchAll(/<span\b[^>]*>([\s\S]*?)<\/span>/gi)]
+    .map(([, text]) => decodeHtml(text.replace(/<!--[\s\S]*?-->|<[^>]*>/g, '')).replace(/\s+/g, ' '));
+  assert.ok(acervoLabels.some((text) => /\b19\s+Shorts\b/.test(text)),
+    'A ficha do Acervo deve informar os 19 Shorts');
 });
 
 test('links internos e âncoras têm destinos reais, sem botões-link vazios', async () => {

@@ -14,7 +14,7 @@ export function CoastalVideoGallery({videos,id}:{videos:CoastalVideo[];id:string
       <div className="coastal-visual" id={playerId}>{playing?
         <iframe ref={player} title={video.title} src={`https://www.youtube-nocookie.com/embed/${video.videoId}?autoplay=1&rel=0`} loading="lazy" referrerPolicy="strict-origin-when-cross-origin" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen/>:
         <button type="button" className="coastal-play" ref={element=>buttonRef(video.videoId,element)} aria-label={`Assistir: ${video.title}`} aria-controls={playerId} onClick={()=>open(video.videoId)}>
-          <img src={video.image} alt="" width="1280" height="720" loading="lazy" decoding="async"/><span className="coastal-play-label"><Play aria-hidden="true"/>Assistir ao vídeo</span>
+          <img src={video.image} alt="" width="1280" height="720" loading="lazy" decoding="async" style={video.artworkWidth?{height:`${Math.min(100,405/video.artworkWidth*100)}%`}:undefined}/><span className="coastal-play-label"><Play aria-hidden="true"/>Assistir ao vídeo</span>
         </button>}</div>
       <div className="coastal-card-body"><p className="coastal-location">{video.location} · Short</p><h3 id={`${playerId}-title`}>{video.title}</h3><p className="coastal-synopsis">{video.synopsis}</p>
         <div className="coastal-actions"><a href={video.url} target="_blank" rel="noopener noreferrer" aria-label={`Abrir no YouTube: ${video.title}`}>No YouTube <ArrowUpRight aria-hidden="true"/></a>{playing&&<button type="button" onClick={close}><X aria-hidden="true"/>Fechar vídeo</button>}</div>

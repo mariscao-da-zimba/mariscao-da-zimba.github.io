@@ -1,5 +1,15 @@
 # Manutenção da edição GitHub Pages
 
+## Ampliação das praias em vídeo — 06/10/2026
+
+Base publicada: `1235d290745b3989a4121c0bff8b5396ec4644a9`. A galeria passa de dez para 19 Shorts, com nove novos vídeos do mesmo canal: Lagoa de Ibiraquera, Lagoa do Mirim, Praia Vermelha, Praia do Rosa, Praia do Luz, Ilha do Batuta e Praia da Barra de Ibiraquera, Barra de Ibiraquera, Praia da Ribanceira e Praia dos Amores. Títulos e canal conferidos por listagem oficial, oEmbed e metadata pública do YouTube em 06/10. As duas lagoas integram a seleção de paisagens; não são chamadas de praias nos cards.
+
+Preservar a Home com três vídeos do Porto. Os novos entram primeiro em Outras paisagens, na página já existente `/praias-em-video`; não há rota nova ou alteração na quantidade de 43 páginas. As contagens da introdução e Acervo usam `coastalVideos.length`; a data da seleção está em `coastalSelectionCheckedOn`. Fontes incorpora cada vídeo automaticamente a partir dos dados. As nove capas JPEG originais, 1280×720, somam 1.453.902 bytes, com carregamento lazy e sem player antes do clique. Não alterar ou ocultar créditos das capas.
+
+As sinopses não reproduzem alegações sem confirmação sobre proteção legal, segurança, acesso, duração de caminhada ou época de observação de animais. A seleção continua estática, sem sincronização automática. Relatório: `PRAIAS-EM-VIDEO-2026-10-06.md`.
+
+A capa de Lagoa do Mirim contém uma arte central de 570×720, mais larga que as demais de aproximadamente 405×720. `artworkWidth:570` ajusta sua altura no card para cerca de 71%, centralizando a arte sem cortar logo ou título. O JPEG original permanece intacto, e o player mantém 9:16. Não remover esse ajuste nem ampliar a capa para preencher o card.
+
 ## Praias em vídeo — 04/10/2026
 
 Base publicada: `a3902769adb9f95c4e0c53393e138361c19dcf2d`. O upgrade audiovisual de 03/10 foi publicado e validado; a nota de login abaixo registra a preparação anterior, não o estado atual.
