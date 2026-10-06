@@ -1,0 +1,112 @@
+name: Atualizar praias em vídeo
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+jobs:
+  importar:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    outputs:
+      sha: ${{ steps.update.outputs.sha }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: main
+          fetch-depth: 0
+      - id: update
+        name: Conferir e integrar os 17 arquivos da ampliação de praias em vídeo
+        shell: bash
+        run: |
+          set -euo pipefail
+          package=PRAIAS-EM-VIDEO-2026-10-06.zip
+          echo 'd765b627e1eb10bb9b730db5ea0f2c6c4897b80538c6cff1f5d8b8e99b1a7fd6  PRAIAS-EM-VIDEO-2026-10-06.zip' | sha256sum --check --strict
+          files=(
+            MANUTENCAO.md
+            PRAIAS-EM-VIDEO-2026-10-06.md
+            app/acervo/page.tsx
+            app/praias-em-video/page.tsx
+            app/refinement.css
+            components/coastal-videos.tsx
+            content/coastal-videos.ts
+            tests/static-export.test.mjs
+            public/images/official/praias--0SKfGn6Qro.jpg
+            public/images/official/praias-DRqBBZi7-do.jpg
+            public/images/official/praias-PrRtk5_qqCc.jpg
+            public/images/official/praias-UMDHWyRfRaE.jpg
+            public/images/official/praias-XOwJqbA0ne8.jpg
+            public/images/official/praias-tUHrzzzO6GA.jpg
+            public/images/official/praias-w0h_21dqASc.jpg
+            public/images/official/praias-w2a_IRQ-jJQ.jpg
+            public/images/official/praias-zdlHF75THTs.jpg
+          )
+          # Validate the complete archive manifest before reading or extracting it.
+          unzip -Z1 "$package" | sort > "$RUNNER_TEMP/praias-archive.txt"
+          printf '%s\n' "${files[@]}" | sort > "$RUNNER_TEMP/praias-expected.txt"
+          diff -u "$RUNNER_TEMP/praias-expected.txt" "$RUNNER_TEMP/praias-archive.txt"
+          all_current=true
+          for file in "${files[@]}"; do
+            if [ ! -f "$file" ] || ! unzip -p "$package" "$file" | cmp -s "$file" -; then
+              all_current=false
+              break
+            fi
+          done
+          if [ "$all_current" = true ]; then
+            echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          # Refuse to overwrite intervening edits in the exact target files.
+          git diff --quiet 1235d290745b3989a4121c0bff8b5396ec4644a9 HEAD -- "${files[@]}"
+          unzip -o "$package" "${files[@]}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- "${files[@]}"
+          git commit -m "Ampliar praias em vídeo com nove novas paisagens do canal Mariscão"
+          git push origin HEAD:main
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+  build:
+    needs: importar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ needs.importar.outputs.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+      - name: Configurar Pages
+        id: pages
+        uses: actions/configure-pages@v5
+      - name: Verificar endereço raiz
+        env:
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: node -e "if(new URL(process.env.BASE_URL).pathname.replaceAll('/','')) throw new Error('Use um repositorio organizacao.github.io ou dominio proprio na raiz; subpastas nao sao suportadas nesta entrega.')"
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run build
+        env:
+          NEXT_PUBLIC_SITE_URL: ${{ steps.pages.outputs.base_url }}
+      - run: npm test
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist/client
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
