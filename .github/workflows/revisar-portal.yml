@@ -1,4 +1,4 @@
-name: Aplicar e publicar revisão visual
+name: Aplicar e publicar revisão completa
 on:
   workflow_dispatch:
 permissions:
@@ -19,22 +19,67 @@ jobs:
           ref: main
           fetch-depth: 0
       - id: update
-        name: Aplicar somente os oito arquivos revisados
+        name: Conferir e integrar os 31 arquivos auditados
         shell: bash
         run: |
           set -euo pipefail
-          if [ -f REVISAO-VISUAL.md ]; then
+          package=CORRECOES-2026-10-08.zip
+          echo '5e7303c73b4a6aba9550816bc78fcde08d13e32e01f023beb6e970ba42990532  CORRECOES-2026-10-08.zip' | sha256sum --check --strict
+          files=(
+            .gitignore
+            CORRECOES-2026-10-08.md
+            MANUTENCAO.md
+            app/acervo/page.tsx
+            app/agenda/page.tsx
+            app/caminho-dos-butiazais/page.tsx
+            app/educacao-ambiental/page.tsx
+            app/fontes/page.tsx
+            app/minimal.css
+            app/page.tsx
+            app/refinement.css
+            components/contact-form.tsx
+            components/contact-message.ts
+            components/ui.tsx
+            content/events.ts
+            content/guide-document.json
+            content/guide-text-overrides.json
+            content/highlights.ts
+            content/projects.ts
+            content/site.ts
+            content/sources.ts
+            content/types.ts
+            package-lock.json
+            package.json
+            public/documentos/guia-caminho-dos-butiazais.pdf
+            scripts/ocr-guide.mjs
+            scripts/restore-guide-text.py
+            scripts/verify-guide.py
+            tests/content-regressions.test.mjs
+            tests/guide-document.test.mjs
+            tests/ui-regressions.test.mjs
+          )
+          # Reject unexpected paths before extraction, including workflow or secret files.
+          unzip -Z1 "$package" | sort > "$RUNNER_TEMP/revisao-archive.txt"
+          printf '%s\n' "${files[@]}" | sort > "$RUNNER_TEMP/revisao-expected.txt"
+          diff -u "$RUNNER_TEMP/revisao-expected.txt" "$RUNNER_TEMP/revisao-archive.txt"
+          all_current=true
+          for file in "${files[@]}"; do
+            if [ ! -f "$file" ] || ! unzip -p "$package" "$file" | cmp -s "$file" -; then
+              all_current=false
+              break
+            fi
+          done
+          if [ "$all_current" = true ]; then
             echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          files=(app/butiazinho.css app/refinement.css components/butiazinho-feature.tsx components/motion-effects.tsx components/site-header.tsx package-lock.json tests/static-export.test.mjs REVISAO-VISUAL.md)
-          git diff --quiet fd993c2efac0e204f8af7b26e7dfddd1f310a376 HEAD -- "${files[@]}"
-          echo '27ebf9edf606c2e81293c21dea0471a0e997c71aa2aa7b030d62928f824a1e8e  REVISAO-VISUAL-2026-09-13.zip' | sha256sum --check --strict
-          unzip -o REVISAO-VISUAL-2026-09-13.zip "${files[@]}"
+          # Do not overwrite intervening changes in the exact target paths.
+          git diff --quiet 5e10bed31de1cfefd279688c55f152e626942ffa HEAD -- "${files[@]}"
+          unzip -o "$package" "${files[@]}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- "${files[@]}"
-          git commit -m "Refinar visual, acessibilidade e desempenho do portal"
+          git commit -m "Corrigir conteúdo, links, contraste, contato e busca no guia após auditoria"
           git push origin HEAD:main
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   build:
@@ -52,6 +97,10 @@ jobs:
       - name: Configurar Pages
         id: pages
         uses: actions/configure-pages@v5
+      - name: Verificar endereço raiz
+        env:
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: node -e "if(new URL(process.env.BASE_URL).pathname.replaceAll('/','')) throw new Error('Esta edição requer hospedagem na raiz do domínio.')"
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
