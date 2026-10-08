@@ -1,5 +1,17 @@
 # Manutenção da edição GitHub Pages
 
+## Novas músicas e Memórias Afetivas — 08/10/2026
+
+Base publicada: `2a48cac0dcf38c4174e2348e5d2fcb4eca0ee70f`. A seleção de `content/music-videos.ts` passa a oito vídeos: Memórias Afetivas., Voa Butiazinho., Boi de Mamão., Circo da Maré, Caça ao tesouro. e os três anteriores. Memórias Afetivas integra a mesma seleção da Turma da Maré por instrução explícita do criador, não uma seção separada de Memória. O título publicado “Turma do Mar” continua intacto.
+
+Home usa `selection="featured"` com os três primeiros e link ao conjunto completo de Cultura. Cultura mantém os oito. Acervo e Fontes refletem os dados automaticamente; o projeto Turma da Maré associa todas as referências. Não misturar com os vídeos costeiros ou com a homenagem de emancipação.
+
+Memórias Afetivas é vídeo normal de 3min47; os outros sete são Shorts. `format` determina o enquadramento do player (16:9 vs 9:16). `useMediaPlayback` preserva um vídeo ativo por vez e restaura foco ao fechar. Nenhum desses players carrega antes do clique e o link direto continua útil sem JavaScript.
+
+Cinco capas novas obtidas de URLs reais do YouTube, sem alteração dos arquivos. Memórias/Circo/Caça: maxresdefault 1280×720. Voa: oar3.jpg?usqp=CCk 360×396; Boi: oar1.jpg?usqp=CCk 360×640, maiores fontes recuperadas da listagem pública (maxresdefault indisponível na verificação). Não declarar resolução maior nem ampliar artificialmente. Capas verticais usam contain; Caça tem arte central de 658px e altura proporcional para preservar os personagens. O arquivo original e as proporções permanecem. `tests/music-assets.test.mjs` decodifica os cabeçalhos JPEG e compara as dimensões com o HTML.
+
+As descrições públicas dos cinco itens são vazias. Não inventar letra, história, classificação infantil ou declaração de IA. Data e títulos confirmados pela listagem do canal, oEmbed, RSS e metadados públicos em 08/10/2026. `content/memory-video.ts` identifica o vídeo normal; a seleção é estática, não sincronização automática. Relatório: `MUSICAS-2026-10-08.md`.
+
 ## Correções da auditoria completa — 08/10/2026
 
 Base: `5e10bed31de1cfefd279688c55f152e626942ffa`. Relatório: `CORRECOES-2026-10-08.md`. Preservadas as 43 páginas, os vídeos, o jogo e as rotas existentes. Os novos testes inspecionam o HTML exportado, a normalização do formulário e o hash do guia, além da suíte anterior.

@@ -146,7 +146,7 @@ export const projects: Project[] = [
       { label: "Conhecer a educação ambiental", href: "/educacao-ambiental" },
       { label: "Ouvir as músicas da Turma da Maré", href: "/cultura#musicas-da-mare" },
     ],
-    sources: ["turma-da-mare-2026", "musica-turma-mare", "musica-rosa-ouro", "musica-turma-mar"],
+    sources: ["turma-da-mare-2026", "memorias-afetivas", "musica-voa-butiazinho", "musica-boi-de-mamao", "musica-circo-da-mare", "musica-caca-ao-tesouro", "musica-turma-mare", "musica-rosa-ouro", "musica-turma-mar"],
   },
   {
     slug: "sonho-de-liberdade",

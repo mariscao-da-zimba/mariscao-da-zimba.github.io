@@ -1,5 +1,6 @@
 import type { ContentLink, SourceRef } from "./types";
 import { coastalChannel, coastalVideos } from "./coastal-videos";
+import { musicChannel, musicVideos } from "./music-videos";
 export const sources: SourceRef[] = [
   {id:"youtube-praias-mariscao",title:"Praias de Imbituba — canal Mariscão da zimba",institution:"Canal indicado pelo proprietário",url:coastalChannel.url,level:"project-material"},
   ...coastalVideos.map(video=>({id:`praias-${video.videoId}`,title:video.title,institution:coastalChannel.name,url:video.url,level:"project-material" as const})),
@@ -14,9 +15,7 @@ export const sources: SourceRef[] = [
   {id:"documentario-2025",title:"Conhecendo o Caminho dos Butiazais",institution:"Canal Caminho dos Butiazais",url:"https://www.youtube.com/watch?v=pAz-L5ygrUc",level:"project-material"},
   {id:"homenagem-imbituba",title:"Ponto de Cultura Viva aos 68 anos de emancipação — vídeo de homenagem",institution:"Canal Mariscao",url:"https://www.youtube.com/watch?v=_wfX7fFoig0",level:"project-material"},
   {id:"youtube-mariscao",title:"Canal Mariscao — músicas e homenagem a Imbituba",institution:"Canal público do Centro",url:"https://www.youtube.com/@mariscaodazimba",level:"project-material"},
-  {id:"musica-turma-mare",title:"Vem com a turma da maré. — Short musical",institution:"Canal Mariscao",url:"https://www.youtube.com/shorts/EczZf3JCFgY",level:"project-material"},
-  {id:"musica-rosa-ouro",title:"Rosa de ouro. — Short musical",institution:"Canal Mariscao",url:"https://www.youtube.com/shorts/gq3BJ_1M11k",level:"project-material"},
-  {id:"musica-turma-mar",title:"Vem brincar com a Turma do Mar. — Short musical",institution:"Canal Mariscao",url:"https://www.youtube.com/shorts/BcA7YE2Vt9s",level:"project-material"},
+  ...musicVideos.map(video=>({id:video.sourceId,title:`${video.title} — ${video.format === "short" ? "Short musical" : "Vídeo musical"}`,institution:`Canal ${musicChannel.name}`,url:video.url,level:"project-material" as const})),
   {id:"guia-2025",title:"Guia Caminho dos Butiazais",institution:"Centro Cultural e Turístico Mariscão da Zimba",url:"/documentos/guia-caminho-dos-butiazais.pdf",level:"project-material"},
   {id:"procult-2023",title:"Resultado final do Edital Procult 01/2023",institution:"Município de Imbituba / Diário Oficial dos Municípios",url:"https://s3cache.dom.sc.gov.br/atos/2024/01/1706218503_procult_2023_final_recursos_e_classificados_e_nao_classificados_extrato.pdf",level:"official",publishedAt:"2024-01-25"},
   {id:"rede-das-artes",title:"Cadastro de Célio de Oliveira — Mariscão da Zimba",institution:"Rede das Artes / Ministério da Cultura",url:"https://rededasartes.cultura.gov.br/agente/15293/",level:"official"},

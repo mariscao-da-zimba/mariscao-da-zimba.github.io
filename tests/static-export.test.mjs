@@ -92,27 +92,95 @@ test('homenagem tem capa local e acesso sem JavaScript, sem player inicial', asy
   assert.ok((await stat(join(root, 'images/official/homenagem-imbituba-youtube.jpg'))).size > 0);
 });
 
-test('três músicas verificadas na Home e Cultura, com capa local e fallback sem player inicial', async () => {
-  const ids = ['EczZf3JCFgY', 'gq3BJ_1M11k', 'BcA7YE2Vt9s'];
-  for (const route of ['', 'cultura']) {
-    const html = withoutScripts(await readFile(join(root, route, 'index.html'), 'utf8'));
-    assert.match(html, /id="musicas-da-mare"/);
-    for (const id of ids) {
-      assert.ok(html.includes(`href="https://www.youtube.com/shorts/${id}"`));
-      assert.ok(html.includes(`aria-controls="musicas-da-mare-${id}"`));
-      assert.ok(html.includes(`turma-da-mare-${id}.jpg`));
-      assert.ok((await stat(join(root, `images/official/turma-da-mare-${id}.jpg`))).size > 0);
-      assert.ok(!tags(html, 'iframe').some((frame) => frame.src?.includes(id)));
-    }
-    assert.equal(tags(html, 'button').filter((button) => button.class === 'music-play').length, 3);
-    assert.ok(html.includes('Vem brincar com a Turma do Mar.'));
-  }
+test('Home destaca Memórias Afetivas e dois Shorts novos; Cultura reúne os oito vídeos musicais com fallback sem player inicial', async () => {
+  const memoriesId = 'B5Bcz79Dnt8';
+  const newIds = ['MNs9cumpuG4', 'NKE_dPCSaS8', 'cr5e8GIuJRY', 'SYe6g2kYT4k'];
+  const previousIds = ['EczZf3JCFgY', 'gq3BJ_1M11k', 'BcA7YE2Vt9s'];
+  const allIds = [memoriesId, ...newIds, ...previousIds];
+  const featuredIds = allIds.slice(0, 3);
+  const videoUrl = (id) => id === memoriesId ? `https://www.youtube.com/watch?v=${id}` : `https://www.youtube.com/shorts/${id}`;
+  const videoImage = (id) => id === memoriesId ? '/images/official/memorias-afetivas-youtube.jpg' : `/images/official/turma-da-mare-${id}.jpg`;
+  assert.equal(new Set(allIds).size, 8, 'Os oito vídeos musicais devem ter IDs únicos');
   const home = withoutScripts(await readFile(join(root, 'index.html'), 'utf8'));
+  const cultura = withoutScripts(await readFile(join(root, 'cultura/index.html'), 'utf8'));
+  for (const [label, html, ids] of [['Home', home, featuredIds], ['Cultura', cultura, allIds]]) {
+    assert.match(html, /id="musicas-da-mare"/);
+    const playButtons = tags(html, 'button').filter((button) => button.class?.split(/\s+/).includes('music-play'));
+    assert.equal(playButtons.length, ids.length, `${label}: quantidade de vídeos musicais`);
+    assert.deepEqual(playButtons.map((button) => button['aria-controls']), ids.map((id) => `musicas-da-mare-${id}`),
+      `${label}: preservar a seleção e a ordem das músicas`);
+    assert.equal(new Set(playButtons.map((button) => button['aria-controls'])).size, ids.length,
+      `${label}: controles únicos para cada música`);
+    for (const id of ids) {
+      assert.equal(tags(html, 'a').filter((link) => link.href === videoUrl(id)).length, 1,
+        `${label}: fallback único para o vídeo musical ${id}`);
+      const covers = tags(html, 'img').filter((image) => image.src === videoImage(id));
+      assert.equal(covers.length, 1, `${label}: capa local única do vídeo musical ${id}`);
+      const dimensions = id === 'MNs9cumpuG4' ? ['360', '396'] : id === 'NKE_dPCSaS8' ? ['360', '640'] : ['1280', '720'];
+      assert.equal(covers[0].width, dimensions[0], `${label}: largura real reservada da capa ${id}`);
+      assert.equal(covers[0].height, dimensions[1], `${label}: altura real reservada da capa ${id}`);
+      const control = playButtons.find((button) => button['aria-controls'] === `musicas-da-mare-${id}`);
+      assert.ok(control['aria-label']?.trim(), `${label}: nome acessível da música ${id}`);
+      assert.ok(html.includes(`id="${control['aria-controls']}"`), `${label}: destino real do controle ${id}`);
+      assert.ok(!tags(html, 'iframe').some((frame) => frame.src?.includes(id)),
+        `${label}: a música ${id} deve carregar após o clique`);
+    }
+    const horizontalCards = tags(html, 'article').filter((article) => {
+      const classes = article.class?.split(/\s+/) ?? [];
+      return classes.includes('music-card') && classes.includes('is-horizontal');
+    });
+    assert.equal(horizontalCards.length, 1, `${label}: apenas Memórias Afetivas usa o formato horizontal`);
+    assert.equal(horizontalCards[0]['aria-labelledby'], `musicas-da-mare-${memoriesId}-title`,
+      `${label}: identificar o vídeo horizontal para manter seu enquadramento no celular`);
+    const formatLabels = [...html.matchAll(/<p\b[^>]*class="music-card-label"[^>]*>([\s\S]*?)<\/p>/gi)]
+      .map(([, text]) => decodeHtml(text.replace(/<!--[\s\S]*?-->|<[^>]*>/g, '')).replace(/\s+/g, ' '));
+    assert.equal(formatLabels.filter((text) => text.startsWith('Vídeo musical')).length, 1,
+      `${label}: informar o formato normal de Memórias Afetivas`);
+    assert.equal(formatLabels.filter((text) => text.startsWith('Short musical')).length, ids.length - 1,
+      `${label}: informar os formatos curtos das canções`);
+    assert.doesNotMatch(html, /Três vídeos musicais/);
+  }
+  for (const id of allIds) {
+    assert.ok((await stat(localFile(videoImage(id)))).size > 0,
+      `Capa ausente ou vazia: ${id}`);
+  }
+  for (const id of allIds.slice(3)) {
+    assert.ok(!tags(home, 'a').some((link) => link.href === videoUrl(id)),
+      `Home: reservar a música ${id} à seleção completa em Cultura`);
+  }
+  assert.ok(cultura.includes('Vem brincar com a Turma do Mar.'), 'Preservar o título publicado da música anterior');
+  const completeLink = [...home.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)]
+    .find(([, attrs]) => attributes(`<a${attrs}>`).href === '/cultura#musicas-da-mare');
+  assert.ok(completeLink, 'Home: acesso direto à seleção completa em Cultura');
+  assert.match(decodeHtml(completeLink[2].replace(/<!--[\s\S]*?-->|<[^>]*>/g, '')).replace(/\s+/g, ' '),
+    /Ver todos os 8 vídeos/, 'Home: informar a quantidade total de vídeos musicais');
   assert.ok(home.indexOf('id="territorio"') < home.indexOf('id="homenagem"'));
   assert.ok(home.indexOf('id="homenagem"') < home.indexOf('id="musicas-da-mare"'));
   assert.ok(home.indexOf('id="musicas-da-mare"') < home.indexOf('id="butiazinho"'));
-  const project = await readFile(join(root, 'projetos/turma-da-mare/index.html'), 'utf8');
+  const acervo = withoutScripts(await readFile(join(root, 'acervo/index.html'), 'utf8'));
+  const musicArchive = [...acervo.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)]
+    .find(([, attrs]) => attributes(`<a${attrs}>`).href === '/cultura#musicas-da-mare');
+  assert.ok(musicArchive, 'Acervo: acesso à coleção musical');
+  const archiveText = decodeHtml(musicArchive[2].replace(/<!--[\s\S]*?-->|<[^>]*>/g, '')).replace(/\s+/g, ' ');
+  assert.match(archiveText, /Música · 8 vídeos/, 'Acervo: refletir os oito vídeos musicais de formatos mistos');
+  assert.ok(tags(musicArchive[2], 'img').some((image) => image.src === videoImage(memoriesId)),
+    'Acervo: usar a capa de Memórias Afetivas para o acesso à seleção completa');
+  assert.doesNotMatch(archiveText, /Três vídeos musicais/);
+  const project = withoutScripts(await readFile(join(root, 'projetos/turma-da-mare/index.html'), 'utf8'));
   assert.match(project, /href="\/cultura#musicas-da-mare"/);
+  const fontes = withoutScripts(await readFile(join(root, 'fontes/index.html'), 'utf8'));
+  const musicSources = [
+    ['memorias-afetivas', memoriesId],
+    ['musica-voa-butiazinho', newIds[0]], ['musica-boi-de-mamao', newIds[1]],
+    ['musica-circo-da-mare', newIds[2]], ['musica-caca-ao-tesouro', newIds[3]],
+    ['musica-turma-mare', previousIds[0]], ['musica-rosa-ouro', previousIds[1]], ['musica-turma-mar', previousIds[2]],
+  ];
+  for (const [sourceId, videoId] of musicSources) {
+    assert.equal(tags(fontes, 'article').filter((article) => article.id === `fonte-${sourceId}`).length, 1,
+      `Fontes: referência única da música ${videoId}`);
+    assert.equal(tags(fontes, 'a').filter((link) => link.href === videoUrl(videoId)).length, 1,
+      `Fontes: origem verificável da música ${videoId}`);
+  }
 });
 
 test('Praia do Porto preserva três vídeos na Home e a galeria reúne 19 vídeos únicos, com capas locais e acesso sem player inicial', async () => {
