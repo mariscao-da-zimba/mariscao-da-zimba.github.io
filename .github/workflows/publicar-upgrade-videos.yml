@@ -1,4 +1,4 @@
-name: Integrar e publicar upgrade audiovisual
+name: Integrar e publicar músicas da Turma da Maré
 on:
   workflow_dispatch:
 permissions:
@@ -19,13 +19,35 @@ jobs:
           ref: main
           fetch-depth: 0
       - id: update
-        name: Conferir e integrar os 22 arquivos do upgrade
+        name: Conferir e integrar os 17 arquivos da seleção musical
         shell: bash
         run: |
           set -euo pipefail
-          package=UPGRADE-MIDIA-2026-10-03.zip
-          echo 'cdf0b19d3db517d9eacb782bbbdbc342e003cdb323833833c729f9d59de900f3  UPGRADE-MIDIA-2026-10-03.zip' | sha256sum --check --strict
-          files=(MANUTENCAO.md UPGRADE-MIDIA-2026-10-03.md app/acervo/page.tsx app/contato/page.tsx app/cultura/page.tsx app/page.tsx app/privacidade/page.tsx app/refinement.css components/footer.tsx content/projects.ts content/site.ts content/sources.ts tests/static-export.test.mjs components/music-videos.tsx components/tribute-video.tsx components/use-media-playback.ts content/music-videos.ts content/tribute.ts public/images/official/homenagem-imbituba-youtube.jpg public/images/official/turma-da-mare-EczZf3JCFgY.jpg public/images/official/turma-da-mare-gq3BJ_1M11k.jpg public/images/official/turma-da-mare-BcA7YE2Vt9s.jpg)
+          package=MUSICAS-2026-10-08.zip
+          echo 'd8a6c81f7fe83aa48c3ea8d19daa84359eff33b7b3449825d0e3195fea7b5755  MUSICAS-2026-10-08.zip' | sha256sum --check --strict
+          files=(
+            MANUTENCAO.md
+            MUSICAS-2026-10-08.md
+            app/acervo/page.tsx
+            app/page.tsx
+            app/refinement.css
+            components/music-videos.tsx
+            content/memory-video.ts
+            content/music-videos.ts
+            content/projects.ts
+            content/sources.ts
+            public/images/official/memorias-afetivas-youtube.jpg
+            public/images/official/turma-da-mare-MNs9cumpuG4.jpg
+            public/images/official/turma-da-mare-NKE_dPCSaS8.jpg
+            public/images/official/turma-da-mare-SYe6g2kYT4k.jpg
+            public/images/official/turma-da-mare-cr5e8GIuJRY.jpg
+            tests/music-assets.test.mjs
+            tests/static-export.test.mjs
+          )
+          # Reject unexpected paths before extraction, including workflow or secret files.
+          unzip -Z1 "$package" | sort > "$RUNNER_TEMP/revisao-archive.txt"
+          printf '%s\n' "${files[@]}" | sort > "$RUNNER_TEMP/revisao-expected.txt"
+          diff -u "$RUNNER_TEMP/revisao-expected.txt" "$RUNNER_TEMP/revisao-archive.txt"
           all_current=true
           for file in "${files[@]}"; do
             if [ ! -f "$file" ] || ! unzip -p "$package" "$file" | cmp -s "$file" -; then
@@ -37,13 +59,13 @@ jobs:
             echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          # Refuse to overwrite intervening edits in the exact target files.
-          git diff --quiet 005feaaf61662f76044e30d502529546a7879c99 HEAD -- "${files[@]}"
+          # Do not overwrite intervening changes in the exact target paths.
+          git diff --quiet 2a48cac0dcf38c4174e2348e5d2fcb4eca0ee70f HEAD -- "${files[@]}"
           unzip -o "$package" "${files[@]}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- "${files[@]}"
-          git commit -m "Upgrade editorial com homenagem e músicas da Turma da Maré"
+          git commit -m "Ampliar músicas da Turma da Maré com Memórias Afetivas e quatro Shorts"
           git push origin HEAD:main
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   build:
@@ -61,6 +83,10 @@ jobs:
       - name: Configurar Pages
         id: pages
         uses: actions/configure-pages@v5
+      - name: Verificar endereço raiz
+        env:
+          BASE_URL: ${{ steps.pages.outputs.base_url }}
+        run: node -e "if(new URL(process.env.BASE_URL).pathname.replaceAll('/','')) throw new Error('Esta edição requer hospedagem na raiz do domínio.')"
       - run: npm ci
       - run: npm run lint
       - run: npm run typecheck
