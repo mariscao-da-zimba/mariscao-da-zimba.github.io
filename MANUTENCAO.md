@@ -1,5 +1,21 @@
 # Manutenção da edição GitHub Pages
 
+## Correções da auditoria completa — 08/10/2026
+
+Base: `5e10bed31de1cfefd279688c55f152e626942ffa`. Relatório: `CORRECOES-2026-10-08.md`. Preservadas as 43 páginas, os vídeos, o jogo e as rotas existentes. Os novos testes inspecionam o HTML exportado, a normalização do formulário e o hash do guia, além da suíte anterior.
+
+Conteúdo: a classificação estadual de Butia catarinensis é Em Perigo (EN), segundo CONSEMA 51/2014; a divergência do guia é explicitada, não apagada. O resultado do Procult foi publicado em 25/01/2024, embora o edital seja 01/2023. Não datar a certificação como Ponto de Cultura sem comprovação. Agenda distingue programação anunciada de registro publicado; anúncios não demonstram realização. As Faces de Anita permanece anunciado, sem execução atual confirmada. Livro Jorge Coelho distingue o anúncio de setembro da programação de dezembro de 2022.
+
+Links: as reportagens do livro e do mosaico foram recuperadas em URLs equivalentes. A referência da Rádio Lagoa Doce, indisponível em 08/10/2026, conserva título, autoria/publicação e contexto em Fontes, sem botão para um 404. Não tratar bloqueios automáticos de outras fontes como prova de remoção.
+
+PDF: o endereço público foi preservado. O documento compacto recebe uma camada invisível de OCR em português, idioma, estrutura básica e 17 marcadores. A arte original foi comparada nas 56 páginas; os créditos essenciais permanecem. OCR pode conter erros e os marcadores não representam certificação PDF/UA. O roteiro acessível em HTML continua disponível. O original de 92 MB da Área de Trabalho não foi alterado.
+
+Ferramentas locais (não usadas no build): `scripts/ocr-guide.mjs`, `scripts/restore-guide-text.py`, `scripts/verify-guide.py`, `content/guide-text-overrides.json`. Requerem Tesseract.js e modelo português para OCR; Python com pypdf, ReportLab e Pillow para PDF; Poppler para renderização. Renderizar a fonte original em PNG, reconhecer as 56 páginas, gerar em `output/pdf`, verificar visual/textualmente e somente então substituir o arquivo de `public/documentos`. Nunca usar o próprio PDF de saída como entrada para nova aplicação de OCR. `content/guide-document.json` registra o hash validado; atualizar conscientemente após nova verificação. Não publicar renders, modelos OCR ou os 92 MB da fonte no repositório.
+
+UI: CSS corrige contraste sem trocar a direção visual. Imagens hero têm srcset responsivo; não ampliar artificialmente os arquivos. O formulário WhatsApp não tem backend e valida campos obrigatórios após trim, anuncia erros e direciona foco. Testes não enviam mensagens.
+
+Dependências: quatro patches compatíveis aplicados; sete alertas altos persistem na cadeia de desenvolvimento, associados a braces sem versão corrigida. `npm audit --omit=dev` não aponta alertas. Não executar `npm audit fix --force`: as sugestões envolvem downgrades incompatíveis. O Pages publica somente o export estático, não o servidor/dev toolchain. Não anunciar segurança absoluta.
+
 ## Ampliação das praias em vídeo — 06/10/2026
 
 Base publicada: `1235d290745b3989a4121c0bff8b5396ec4644a9`. A galeria passa de dez para 19 Shorts, com nove novos vídeos do mesmo canal: Lagoa de Ibiraquera, Lagoa do Mirim, Praia Vermelha, Praia do Rosa, Praia do Luz, Ilha do Batuta e Praia da Barra de Ibiraquera, Barra de Ibiraquera, Praia da Ribanceira e Praia dos Amores. Títulos e canal conferidos por listagem oficial, oEmbed e metadata pública do YouTube em 06/10. As duas lagoas integram a seleção de paisagens; não são chamadas de praias nos cards.

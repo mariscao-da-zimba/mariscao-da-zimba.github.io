@@ -1,11 +1,10 @@
 import type { Project } from "./types";
+import { sourceLink } from "./sources";
 
 const chamberRecord = "https://www.imbituba.sc.leg.br/proposicoes/Mocoes/0/1/0/5064";
 const institutionalProfile = "https://portalahora.com.br/noticias/mariscao-da-zimba-instituicao-cultural-e-turistica-busca-manter-a-historia-do-litoral-catarinense-viva/";
 const acimRecord = "https://www.acimimbituba.org/single-post/nucleo-de-estudos-acorianos-visita-imbituba-1";
 const bookFairRecord = "https://hnoticias.com.br/cultura/3-feira-do-livro-de-imbituba-acontece-nesta-sexta-e-sabado-16-e-17-de-dezembro-5489";
-const jorgeProfile = "https://horahiper.com.br/geral/livro-jorge-coelho-coracao-acoriano-sera-lancado-nesta-semana-em-imbituba-10718";
-const radioRecord = "https://www.radiolagoadoce.com.br/coluna/a-heranca-dos-butiazais-biologia-saberes-ancestrais-e-a-alma-de-imbituba";
 
 export const projects: Project[] = [
   {
@@ -14,8 +13,8 @@ export const projects: Project[] = [
     excerpt: "Paisagens, comunidades e saberes conectados por um roteiro de 14 pontos.",
     description: "Projeto de valorização cultural, ambiental e turística de Imbituba, estruturado em um guia oficial, um documentário e um percurso por 14 lugares.",
     details: [
-      "O resultado do Edital Procult 01/2023 registra o Caminho dos Butiazais entre os projetos classificados em Imbituba.",
-      "O guia e o documentário foram lançados publicamente em abril de 2025. Em junho do mesmo ano, o filme voltou à programação da Biblioteca Pública de Imbituba, acompanhado de roda de conversa e distribuição do guia.",
+      "O resultado final do Edital Procult 01/2023, publicado em 25 de janeiro de 2024, registra o Caminho dos Butiazais entre os projetos classificados em Imbituba. O ano do edital não é a data da publicação do resultado.",
+      "A programação publicada em março de 2025 anunciou o lançamento do guia e do documentário para 5 de abril. Outro anúncio, de maio, incluiu a exibição do filme, roda de conversa e distribuição do guia na Biblioteca Pública de Imbituba em 3 de junho. Essas fontes registram a programação prevista, não comprovam por si só a realização dos encontros.",
     ],
     status: "permanent",
     year: "2023—",
@@ -24,7 +23,7 @@ export const projects: Project[] = [
       { label: "Explorar os 14 pontos", href: "/caminho-dos-butiazais" },
       { label: "Abrir o guia oficial", href: "/documentos/guia-caminho-dos-butiazais.pdf", external: true },
       { label: "Assistir ao documentário", href: "https://www.youtube.com/watch?v=pAz-L5ygrUc", external: true },
-      { label: "Consultar o resultado do Procult", href: "https://s3cache.dom.sc.gov.br/atos/2024/01/1706218503_procult_2023_final_recursos_e_classificados_e_nao_classificados.pdf", external: true },
+      sourceLink("procult-2023", "Consultar o resultado do Procult"),
     ],
     sources: ["guia-2025", "documentario-2025", "procult-2023", "lancamento-2025", "biblioteca-2025"],
   },
@@ -105,30 +104,30 @@ export const projects: Project[] = [
     excerpt: "Livro-memória sobre a vida, a obra e os vínculos açorianos do músico.",
     description: "Publicação idealizada por Célio de Oliveira e escrita pela jornalista Emanuelle Querino Alves de Aviz, reunindo entrevistas, memórias e a obra musical de Jorge Coelho.",
     details: [
-      "A obra conecta Imbituba, Florianópolis e os Açores e foi lançada em dezembro de 2022, durante a 3ª Feira do Livro de Imbituba.",
-      "A programação pública identifica Célio de Oliveira como produtor cultural e coordenador dos projetos Rota Açoriana e Caminho dos Butiazais.",
+      "A obra conecta Imbituba, Florianópolis e os Açores. A reportagem de 5 de setembro de 2022 anunciou um primeiro lançamento para 10 de setembro, restrito a convidados; esse anúncio não comprova a realização do evento.",
+      "Em dezembro de 2022, o livro também foi incluído na programação da 3ª Feira do Livro de Imbituba, anunciada para os dias 16 e 17. Essa programação identifica Célio de Oliveira como produtor cultural e coordenador dos projetos Rota Açoriana e Caminho dos Butiazais, sem estabelecer dezembro como a data do primeiro lançamento.",
     ],
     status: "archive",
     year: "2022",
     categories: ["Cultura", "Memória", "Literatura"],
     resources: [
-      { label: "Ler a apresentação do livro", href: jorgeProfile, external: true },
-      { label: "Ver o registro da Feira do Livro", href: bookFairRecord, external: true },
+      sourceLink("jorge-coelho-hora-2022", "Ler a apresentação do livro"),
+      { label: "Consultar a programação da Feira do Livro", href: bookFairRecord, external: true },
     ],
     sources: ["jorge-coelho-2022", "jorge-coelho-hora-2022"],
   },
   {
     slug: "chico-pomboca",
     title: "Chico Pomboca, o viajante do tempo",
-    excerpt: "Conto de Célio de Oliveira levado à narração pública.",
-    description: "Conto apresentado por Daniela Scartazzini na 3ª Feira do Livro de Imbituba, em dezembro de 2022.",
+    excerpt: "Conto de Célio de Oliveira anunciado na programação da Feira do Livro.",
+    description: "Conto de Célio de Oliveira incluído na programação da 3ª Feira do Livro de Imbituba, em dezembro de 2022, com narração prevista por Daniela Scartazzini.",
     details: [
-      "A programação da feira confirma Célio de Oliveira como autor e registra a circulação pública da obra em uma atividade literária do município.",
+      "O anúncio da feira identifica Célio de Oliveira como autor e prevê uma atividade de narração do conto. A programação publicada não comprova, por si só, a realização da apresentação.",
     ],
     status: "archive",
     year: "2022",
     categories: ["Cultura", "Memória", "Literatura"],
-    resources: [{ label: "Ver o registro da Feira do Livro", href: bookFairRecord, external: true }],
+    resources: [{ label: "Consultar a programação da Feira do Livro", href: bookFairRecord, external: true }],
     sources: ["jorge-coelho-2022"],
   },
   {
@@ -165,7 +164,7 @@ export const projects: Project[] = [
     resources: [
       { label: "Ler o registro oficial do batismo de fogo", href: "https://laguna.sc.gov.br/noticia-660080/", external: true },
       { label: "Conhecer o Mirante da Praia do Porto", href: "/caminho-dos-butiazais/mirante-da-praia-do-porto" },
-      { label: "Ver o registro de Um Sonho de Liberdade", href: "https://horahiper.com.br/geral/mosaico-de-anita-garibaldi-e-inaugurado-em-imbituba-6152", external: true },
+      sourceLink("sonho-liberdade-2021", "Ver o registro de Um Sonho de Liberdade"),
     ],
     sources: ["anita-imbituba-1839", "imbituba-proposta-curricular", "sonho-liberdade-2021"],
   },
@@ -183,7 +182,7 @@ export const projects: Project[] = [
     categories: ["Cultura", "Memória", "Meio ambiente"],
     resources: [
       { label: "Ler o registro da ACIM", href: acimRecord, external: true },
-      { label: "Ler a matéria de 2026", href: radioRecord, external: true },
+      sourceLink("butiazais-radio-2026", "Consultar a referência da matéria de 2026"),
     ],
     sources: ["acim-2019", "butiazais-radio-2026"],
   },
@@ -245,7 +244,7 @@ export const projects: Project[] = [
       "Na fala registrada em ata, o projeto aparece entre os investimentos então planejados pelo Centro, ao lado do documentário e do guia do Caminho dos Butiazais.",
       "Não foi localizada uma fonte pública posterior que confirme lançamento, cronograma ou conclusão. Por isso, o portal mantém somente o anúncio documentado.",
     ],
-    status: "development",
+    status: "announced",
     year: "Anunciado em 2024",
     categories: ["Memória", "Cultura"],
     resources: [{ label: "Ler o registro da Câmara", href: chamberRecord, external: true }],

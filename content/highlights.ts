@@ -1,3 +1,5 @@
+import { sourceHref } from "./sources";
+
 export const highlights = [
   {
     date: "Julho de 2026",
@@ -15,6 +17,6 @@ export const highlights = [
     date: "Fevereiro de 2026",
     title: "A herança dos butiazais ganha espaço no rádio",
     text: "Programação registra projetos, biojoias, ervas, gastronomia e narrativas que relacionam o Centro aos saberes do butiá.",
-    href: "https://www.radiolagoadoce.com.br/coluna/a-heranca-dos-butiazais-biologia-saberes-ancestrais-e-a-alma-de-imbituba",
+    href: sourceHref("butiazais-radio-2026"),
   },
 ] as const;

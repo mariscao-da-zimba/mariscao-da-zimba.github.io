@@ -36,9 +36,9 @@ export const site = {
 export const timeline = [
   ["2008", "Fundação da organização cultural em Imbituba."],
   ["2008—2022", "Desenvolvimento de projetos culturais, literários, artesanais e comunitários ligados à memória do litoral catarinense."],
-  ["2023", "Projeto Caminho dos Butiazais classificado em programa municipal de incentivo à cultura."],
+  ["Jan. 2024", "Caminho dos Butiazais classificado no Edital Procult 01/2023, conforme resultado final publicado em 25 de janeiro de 2024."],
   ["1º abr. 2024", "A Câmara Municipal de Imbituba entrega Moção de Congratulação ao Mariscão da Zimba pela atuação em favor da memória cultural do município."],
   ["24 jul. 2024", "A Lei Estadual nº 19.013 declara a Cachaça com Butiá integrante do Patrimônio Cultural Imaterial de Santa Catarina. A lei reconhece o bem cultural de forma geral; a justificativa do projeto legislativo registra a contribuição do Mariscão da Zimba."],
-  ["2025", "Lançamento do Guia e do documentário Caminho dos Butiazais. Certificação como Ponto de Cultura."],
+  ["2025", "Guia e documentário Caminho dos Butiazais divulgados na programação cultural de Imbituba."],
   ["2026", "Novos registros públicos apresentam a Turma da Maré e articulações do Centro em cultura, turismo e educação ambiental."],
 ];

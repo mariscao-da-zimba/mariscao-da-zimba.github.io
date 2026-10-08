@@ -1,4 +1,4 @@
-import type { SourceRef } from "./types";
+import type { ContentLink, SourceRef } from "./types";
 import { coastalChannel, coastalVideos } from "./coastal-videos";
 export const sources: SourceRef[] = [
   {id:"youtube-praias-mariscao",title:"Praias de Imbituba — canal Mariscão da zimba",institution:"Canal indicado pelo proprietário",url:coastalChannel.url,level:"project-material"},
@@ -8,7 +8,7 @@ export const sources: SourceRef[] = [
   {id:"camara-mocao-2023",title:"Moção nº 21/2023 — Congratulação ao Mariscão da Zimba",institution:"Câmara Municipal de Imbituba",url:"https://www.imbituba.sc.leg.br/proposicoes/Mocoes/0/1/0/5064",level:"official"},
   {id:"lei-19013",title:"Lei Estadual nº 19.013/2024 — Cachaça com Butiá",institution:"Assembleia Legislativa de Santa Catarina",url:"https://leis.alesc.sc.gov.br/ato-normativo/22514",level:"official"},
   {id:"pl-169-justificativa",title:"Justificação do Projeto de Lei nº 0169/2023 — origem e participação do Mariscão da Zimba",institution:"Assembleia Legislativa de Santa Catarina",url:"https://portalelegis.alesc.sc.gov.br/documentos/zJyx0/download",level:"official"},
-  {id:"consema-51",title:"Resolução CONSEMA nº 51/2014 — Lista Oficial da Flora Ameaçada de Santa Catarina",institution:"Conselho Estadual do Meio Ambiente de Santa Catarina",url:"https://portal.doe.sea.sc.gov.br/repositorio/2014/20141223/Jornal/1090.pdf",level:"official"},
+  {id:"consema-51",title:"Resolução CONSEMA nº 51/2014 — Lista Oficial da Flora Ameaçada de Santa Catarina",institution:"Conselho Estadual do Meio Ambiente de Santa Catarina",url:"https://www.semae.sc.gov.br/download/resolucao-consema-no-51/",level:"official"},
   {id:"cncflora-butia",title:"Butia catarinensis — avaliação e distribuição",institution:"CNCFlora / Jardim Botânico do Rio de Janeiro",url:"https://proflora.jbrj.gov.br/html/Butia%20catarinensis_2022.html",level:"official"},
   {id:"nea-ufsc",title:"Conselho Deliberativo do Núcleo de Estudos Açorianos",institution:"UFSC / NEA",url:"https://nea.ufsc.br/conselho-deliberativo/",level:"institutional"},
   {id:"documentario-2025",title:"Conhecendo o Caminho dos Butiazais",institution:"Canal Caminho dos Butiazais",url:"https://www.youtube.com/watch?v=pAz-L5ygrUc",level:"project-material"},
@@ -18,20 +18,20 @@ export const sources: SourceRef[] = [
   {id:"musica-rosa-ouro",title:"Rosa de ouro. — Short musical",institution:"Canal Mariscao",url:"https://www.youtube.com/shorts/gq3BJ_1M11k",level:"project-material"},
   {id:"musica-turma-mar",title:"Vem brincar com a Turma do Mar. — Short musical",institution:"Canal Mariscao",url:"https://www.youtube.com/shorts/BcA7YE2Vt9s",level:"project-material"},
   {id:"guia-2025",title:"Guia Caminho dos Butiazais",institution:"Centro Cultural e Turístico Mariscão da Zimba",url:"/documentos/guia-caminho-dos-butiazais.pdf",level:"project-material"},
-  {id:"procult-2023",title:"Resultado final do Edital Procult 01/2023",institution:"Município de Imbituba",url:"https://s3cache.dom.sc.gov.br/atos/2024/01/1706218503_procult_2023_final_recursos_e_classificados_e_nao_classificados.pdf",level:"official"},
+  {id:"procult-2023",title:"Resultado final do Edital Procult 01/2023",institution:"Município de Imbituba / Diário Oficial dos Municípios",url:"https://s3cache.dom.sc.gov.br/atos/2024/01/1706218503_procult_2023_final_recursos_e_classificados_e_nao_classificados_extrato.pdf",level:"official",publishedAt:"2024-01-25"},
   {id:"rede-das-artes",title:"Cadastro de Célio de Oliveira — Mariscão da Zimba",institution:"Rede das Artes / Ministério da Cultura",url:"https://rededasartes.cultura.gov.br/agente/15293/",level:"official"},
   {id:"perfil-institucional-2024",title:"Mariscão da Zimba: instituição cultural e turística",institution:"Portal A Hora",url:"https://portalahora.com.br/noticias/mariscao-da-zimba-instituicao-cultural-e-turistica-busca-manter-a-historia-do-litoral-catarinense-viva/",level:"press"},
-  {id:"jorge-coelho-2022",title:"Lançamento do livro Jorge Coelho — Coração Açoriano",institution:"H Notícias / Feira do Livro de Imbituba",url:"https://hnoticias.com.br/cultura/3-feira-do-livro-de-imbituba-acontece-nesta-sexta-e-sabado-16-e-17-de-dezembro-5489",level:"press"},
-  {id:"jorge-coelho-hora-2022",title:"Livro Jorge Coelho — Coração Açoriano será lançado em Imbituba",institution:"Hora Hiper",url:"https://horahiper.com.br/geral/livro-jorge-coelho-coracao-acoriano-sera-lancado-nesta-semana-em-imbituba-10718",level:"press"},
+  {id:"jorge-coelho-2022",title:"Programação da 3ª Feira do Livro de Imbituba — dezembro de 2022",institution:"H Notícias / Feira do Livro de Imbituba",url:"https://hnoticias.com.br/cultura/3-feira-do-livro-de-imbituba-acontece-nesta-sexta-e-sabado-16-e-17-de-dezembro-5489",level:"press",publishedAt:"2022-12-15"},
+  {id:"jorge-coelho-hora-2022",title:"Livro Jorge Coelho — Coração Açoriano será lançado nesta semana em Imbituba",institution:"Hora Hiper",url:"https://horahiper.com.br/geral/livro-jorge-coelho-coracao-acoriano-sera-lancado-nesta-semana-em-imbituba-106264",level:"press",publishedAt:"2022-09-05"},
   {id:"acim-2019",title:"Núcleo de Estudos Açorianos visita Imbituba",institution:"Associação Empresarial de Imbituba",url:"https://www.acimimbituba.org/single-post/nucleo-de-estudos-acorianos-visita-imbituba-1",level:"institutional"},
   {id:"lancamento-2025",title:"Lançamento do documentário e do Guia Caminho dos Butiazais",institution:"Portal Click Sul",url:"https://portalclicksul.com.br/imbituba-lanca-documentario-e-guia-sobre-os-butiazais-para-impulsionar-turismo-sustentavel",level:"press"},
   {id:"biblioteca-2025",title:"Exibição do documentário e roda de conversa",institution:"Notícias Imbituba",url:"https://www.noticiasimbituba.com.br/noticia/6133/biblioteca-de-imbituba-exibira-documentario-quot-caminho-dos-butiazais-quot-e-roda-de-conversa-sobre-patrimonio-ambiental",level:"press"},
-  {id:"butiazais-radio-2026",title:"A Herança dos Butiazais: biologia, saberes e memória",institution:"Rádio Lagoa Doce",url:"https://www.radiolagoadoce.com.br/coluna/a-heranca-dos-butiazais-biologia-saberes-ancestrais-e-a-alma-de-imbituba",level:"press"},
+  {id:"butiazais-radio-2026",title:"A Herança dos Butiazais: Biologia, Saberes Ancestrais e a Alma de Imbituba",institution:"Profª Cida / Rádio Lagoa Doce",url:"https://www.radiolagoadoce.com.br/coluna/a-heranca-dos-butiazais-biologia-saberes-ancestrais-e-a-alma-de-imbituba",level:"press",publishedAt:"2026-02-06",availability:{status:"unavailable",checkedAt:"2026-10-08"}},
   {id:"turma-da-mare-2026",title:"Turma da Maré transforma cultura, turismo e consciência ambiental",institution:"Jornal Popular Catarinense",url:"https://www.jornalpopularcatarinense.com.br/turma-da-mare-transforma-cultura-turismo-e-consciencia-ambiental-em-espetaculo-de-cidadania/",level:"press"},
   {id:"porto-belo-2026",title:"Comitiva de Imbituba visita à Fundação de Cultura de Porto Belo",institution:"Jornal dos Bairros",url:"https://jornaldosbairros.tv/noticia/94077/comitiva-de-imbituba-visita-fundacao-de-cultura-de-porto-belo",level:"press"},
   {id:"anita-imbituba-1839",title:"Anita Garibaldi na sala de aula — o batismo de fogo em Imbituba",institution:"Município de Laguna",url:"https://laguna.sc.gov.br/noticia-660080/",level:"official"},
   {id:"imbituba-proposta-curricular",title:"Proposta Curricular da Rede Municipal de Ensino — história de Imbituba",institution:"Município de Imbituba",url:"https://imbituba.sc.gov.br/uploads/sites/292/2023/09/Proposta-Curricular.pdf",level:"official"},
-  {id:"sonho-liberdade-2021",title:"Mosaico de Anita Garibaldi e registro do poema Um Sonho de Liberdade",institution:"Hora Hiper",url:"https://horahiper.com.br/geral/mosaico-de-anita-garibaldi-e-inaugurado-em-imbituba-6152",level:"press"},
+  {id:"sonho-liberdade-2021",title:"Mosaico de Anita Garibaldi e registro do poema Um Sonho de Liberdade",institution:"Hora Hiper",url:"https://horahiper.com.br/geral/mosaico-de-anita-garibaldi-e-inaugurado-em-imbituba-101940",level:"press",publishedAt:"2021-11-05"},
   {id:"instagram-caminho",title:"Caminho dos Butiazais no Instagram",institution:"Perfil público do projeto",url:"https://www.instagram.com/caminhodosbutiazais/",level:"project-material"},
   {id:"youtube-caminho",title:"Caminho dos Butiazais no YouTube",institution:"Canal público do projeto",url:"https://www.youtube.com/@CaminhodosButiazais",level:"project-material"},
   {id:"facebook-mariscao",title:"Mariscão da Zimba no Facebook",institution:"Página pública do Centro",url:"https://www.facebook.com/100064672632800/",level:"institutional"},
@@ -39,3 +39,27 @@ export const sources: SourceRef[] = [
   {id:"facebook-rota",title:"Rota Açoriana no Facebook",institution:"Página pública do projeto",url:"https://www.facebook.com/rotaacoriana",level:"project-material"},
   {id:"canais-caminho",title:"Canais oficiais do Caminho dos Butiazais",institution:"Linktree do projeto",url:"https://linktr.ee/butiazais",level:"project-material"},
 ];
+
+export function getSource(id: string): SourceRef {
+  const source = sources.find((item) => item.id === id);
+  if (!source) throw new Error(`Referência não cadastrada: ${id}`);
+  return source;
+}
+
+// Preserve a bibliographic reference without sending visitors to a known failed URL.
+// Availability is a dated observation, not a claim that the publication ceased to exist.
+export function sourceHref(id: string): string {
+  const source = getSource(id);
+  return source.url && !source.availability ? source.url : `/fontes#fonte-${source.id}`;
+}
+
+export function sourceLink(id: string, label: string): ContentLink {
+  const href = sourceHref(id);
+  return { label, href, external: /^https?:\/\//.test(href) };
+}
+
+export function sourceAvailabilityNote(source: SourceRef): string | undefined {
+  if (!source.availability) return undefined;
+  const date = new Intl.DateTimeFormat("pt-BR", { timeZone: "UTC" }).format(new Date(`${source.availability.checkedAt}T00:00:00Z`));
+  return `Endereço indisponível na verificação de ${date}. Referência bibliográfica preservada; nenhum novo endereço foi confirmado.`;
+}

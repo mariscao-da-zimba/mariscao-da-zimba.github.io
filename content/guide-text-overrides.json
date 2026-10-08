@@ -1,0 +1,22 @@
+{
+  "2": {
+    "reason": "Ficha técnica transcrita da leitura visual da página original; o OCR automático não reconheceu o texto sobre a fotografia.",
+    "appendLines": [
+      {"text": "CENTRO CULTURAL E", "bbox": [1200, 286, 1770, 330]},
+      {"text": "TURÍSTICO MARISCÃO DA ZIMBA", "bbox": [1200, 346, 1990, 387]},
+      {"text": "Idealização: Célio de Oliveira, diretor C. C. T. Mariscão da Zimba", "bbox": [1200, 497, 2190, 535]},
+      {"text": "Sandro de Souza, diretor C. C. T. Mariscão da Zimba", "bbox": [1390, 555, 2200, 589]},
+      {"text": "Jornalista responsável: Emanuelle Querino Alves de Aviz", "bbox": [1200, 625, 2090, 659]},
+      {"text": "Fotos: Cláudio Moreira Lima / Morlima produções", "bbox": [1200, 697, 1990, 730]},
+      {"text": "Revisão: Lorraine Amorim Corrêa", "bbox": [1200, 769, 1760, 802]},
+      {"text": "Projeto gráfico, capa e diagramação: Rita Motta - Editora Tribo da Ilha", "bbox": [1200, 844, 2300, 877]},
+      {"text": "Impressão: Gráfica e Editora Copiart", "bbox": [1200, 917, 1790, 950]},
+      {"text": "Catalogação na fonte por Andreza dos Santos - CRB 14/866.", "bbox": [1170, 1555, 1820, 1580]},
+      {"text": "Assunto: Cultura.", "bbox": [1170, 1614, 1380, 1640]}
+    ]
+  },
+  "4": {
+    "reason": "Página fotográfica de vegetação, sem texto editorial; evita transformar folhas em palavras de OCR.",
+    "skipOcr": true
+  }
+}
