@@ -4,6 +4,7 @@ import "./globals.css";
 import "./minimal.css";
 import "./refinement.css";
 import "./butiazinho.css";
+import "./experience.css";
 import { SiteHeader } from "../components/site-header";
 import { Footer } from "../components/footer";
 import { MotionEffects } from "../components/motion-effects";

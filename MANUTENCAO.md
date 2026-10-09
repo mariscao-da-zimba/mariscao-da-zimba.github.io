@@ -92,3 +92,11 @@ Não há CMS nem edição pública. Alterações são feitas no código/dados e 
 ## Segurança
 
 Não há backend de formulário, segredos de produção ou banco de dados. O workflow usa o token automático do GitHub com permissões limitadas; não adicionar tokens pessoais. As dependências estão fixadas em package-lock.json. Atualizar com testes. Proteções HTTP da antiga hospedagem não são garantidas pelo Pages; não anunciar auditoria de invasão ou segurança absoluta.
+
+## Movimento cultural — 09/10/2026
+
+`components/motion-effects.tsx` controla entrada, revelações, superfícies com luz, detalhes da maré e navegação das experiências. `components/culture-ribbon.tsx` mantém o estado do botão de pausa. A camada visual específica é `app/experience.css`, importada após os estilos existentes para neutralizar as antigas transformações que prejudicavam nitidez. Não acrescentar mais camadas de sobrescrita para novos efeitos; editar estes arquivos.
+
+Não esconder conteúdo aguardando JavaScript. Não animar resolução, blur ou inclinação das fotos/textos. Preservar a preferência de movimento reduzido e limpeza de observers, frames e eventos em aba oculta/desmontagem. Percentuais de `IntersectionObserver.rootMargin` usam largura: o scrollspy usa pixels derivados da altura e recalcula ao redimensionar.
+
+`tests/motion-effects.test.mjs` executa o hook real transpilado em um ambiente determinístico, cobrindo pausa de aba, preferências de mídia, fallback, entrada única, scrollspy, redimensionamento e cleanup. Complementar sempre com teste visual no navegador e auditoria HTTP após build/publicação. Relatório: `MOTION-2026-10-09.md`.

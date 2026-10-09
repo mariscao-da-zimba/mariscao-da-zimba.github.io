@@ -1,0 +1,412 @@
+/* Coastal movement: paper, tide and butia gold. Type and media keep their geometry. */
+:root {
+  --experience-ease: cubic-bezier(.2,.8,.2,1);
+  --experience-edge: #497a7366;
+  --experience-shadow: #113f4b13;
+}
+
+/* The runtime owns hero entrances; the old CSS entrances must not run alongside it. */
+.motion-ready .hero-copy .eyebrow,
+.motion-ready .hero-copy h1,
+.motion-ready .hero-copy .lead,
+.motion-ready .hero-copy .actions,
+.motion-ready .hero-photo,
+.motion-ready .page-hero h1,
+.motion-ready .page-hero > p {
+  animation: none;
+}
+
+/* Remove the inherited large lifts and 3D effects, including before JS is ready. */
+:is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card, .coastal-card, .now-grid > a),
+:is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card, .coastal-card, .now-grid > a):hover {
+  transform: none;
+  transform-style: flat;
+  translate: none;
+  will-change: auto;
+}
+
+.project-strip > a:hover .project-index,
+.now-grid > a:hover h3 {
+  transform: none;
+  translate: none;
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a).motion-surface {
+    position: relative;
+    isolation: isolate;
+    transition: border-color .24s, box-shadow .24s, translate .24s var(--experience-ease);
+  }
+
+  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a).motion-surface::after {
+    content: "";
+    display: block;
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    width: auto;
+    height: auto;
+    border: 0;
+    border-radius: inherit;
+    background: radial-gradient(190px circle at var(--surface-x, 50%) var(--surface-y, 50%), #e9bc582b, transparent 74%);
+    box-shadow: none;
+    opacity: 0;
+    transform: none;
+    pointer-events: none;
+    transition: opacity .24s;
+  }
+
+  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a).motion-surface:is(:hover, :focus-within) {
+    translate: 0 -3px;
+    border-color: var(--experience-edge);
+    box-shadow: inset 0 0 0 1px #497a7338, 0 10px 24px var(--experience-shadow);
+  }
+
+  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a).motion-surface:is(:hover, :focus-within)::after {
+    opacity: 1;
+  }
+
+  .motion-ready .now-grid > a.motion-surface::after {
+    background: radial-gradient(190px circle at var(--surface-x, 50%) var(--surface-y, 50%), #f7f6f05c, transparent 74%);
+  }
+}
+
+/* A playing card stays still while its controls and embedded player are in use. */
+.music-card.is-playing,
+.coastal-card.is-playing {
+  translate: none;
+  transform: none;
+}
+
+.music-card.is-playing::after,
+.coastal-card.is-playing::after {
+  display: none;
+}
+
+/* Shoreline contours sit behind the content. Only these decorations move. */
+.motion-decor {
+  position: relative;
+  isolation: isolate;
+  --shoreline-color: #245c6024;
+}
+
+.home-route.motion-decor {
+  --shoreline-color: #e9bc583b;
+}
+
+.home-visit.motion-decor {
+  --shoreline-color: #245c6030;
+}
+
+.motion-decor::before,
+.motion-decor::after {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: -1;
+  width: clamp(360px, 64vw, 820px);
+  height: clamp(120px, 20vw, 260px);
+  top: auto;
+  right: -9%;
+  bottom: -13%;
+  left: auto;
+  border: 1px solid var(--shoreline-color);
+  border-radius: 48% 52% 47% 53% / 50% 44% 56% 50%;
+  background: none;
+  box-shadow: none;
+  opacity: .8;
+  transform: rotate(-8deg);
+  translate: none;
+  pointer-events: none;
+  animation: none;
+}
+
+.motion-decor::after {
+  width: clamp(440px, 76vw, 960px);
+  height: clamp(160px, 25vw, 320px);
+  right: -5%;
+  bottom: -22%;
+  opacity: .55;
+  transform: rotate(-5deg);
+}
+
+.intro-statement.motion-decor::before {
+  right: -16%;
+  bottom: -24%;
+}
+
+.home-route.motion-decor::before {
+  right: auto;
+  left: -18%;
+  bottom: -11%;
+}
+
+.page-hero.motion-decor::before,
+.page-hero.motion-decor::after {
+  right: -15%;
+  bottom: -35%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .motion-ready .motion-decor.motion-in-view::before {
+    animation: shoreline-arrive 4.2s var(--experience-ease) 1 both;
+  }
+
+  .motion-ready .motion-decor.motion-in-view::after {
+    animation: shoreline-arrive-soft 4.2s .15s var(--experience-ease) 1 both;
+  }
+}
+
+@keyframes shoreline-arrive {
+  from { opacity: .2; translate: -14px 8px; }
+  to { opacity: .8; translate: none; }
+}
+
+@keyframes shoreline-arrive-soft {
+  from { opacity: .15; translate: 12px 6px; }
+  to { opacity: .55; translate: none; }
+}
+
+/* Two equal groups make the controlled ribbon loop without a visible seam. */
+.culture-marquee {
+  position: relative;
+  overflow: hidden;
+}
+
+.culture-marquee > .culture-ribbon-track {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  width: max-content;
+  max-width: none;
+  animation: none;
+  transform: none;
+}
+
+.culture-ribbon-group {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  gap: clamp(26px, 3vw, 42px);
+  padding-inline: clamp(13px, 1.5vw, 21px);
+}
+
+.culture-ribbon-group + .culture-ribbon-group {
+  display: none;
+}
+
+.culture-ribbon-item {
+  display: inline-flex;
+  align-items: center;
+  gap: clamp(26px, 3vw, 42px);
+  white-space: nowrap;
+}
+
+.culture-ribbon-item > span {
+  font: inherit;
+}
+
+.culture-marquee .ribbon-control {
+  display: none;
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: max(16px, var(--page-gutter));
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  max-width: calc(100% - 32px);
+  padding: 8px 12px;
+  border: 1px solid #f7f6f066;
+  border-radius: 999px;
+  background: var(--coast);
+  color: var(--paper);
+  font: 700 .75rem/1.3 var(--font-sans);
+  cursor: pointer;
+  transform: translateY(-50%);
+}
+
+.culture-marquee .ribbon-control > span {
+  font: inherit;
+}
+
+.culture-marquee .ribbon-control svg {
+  width: 16px;
+  height: 16px;
+  flex: 0 0 auto;
+}
+
+.culture-marquee .ribbon-control:is(:hover, :focus-visible) {
+  border-color: var(--sun);
+  color: var(--sun);
+}
+
+.culture-marquee .ribbon-control:focus-visible {
+  outline: 3px solid var(--sun);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .motion-ready .culture-ribbon-group + .culture-ribbon-group {
+    display: flex;
+  }
+
+  .motion-ready .culture-marquee > .culture-ribbon-track {
+    animation: culture-ribbon-flow 42s linear infinite;
+    animation-play-state: paused;
+  }
+
+  .motion-ready .culture-marquee.motion-in-view > .culture-ribbon-track {
+    animation-play-state: running;
+  }
+
+  .motion-ready .culture-marquee:is(.is-paused, :hover, :focus-within) > .culture-ribbon-track {
+    animation-play-state: paused;
+  }
+
+  .motion-ready .culture-marquee .ribbon-control {
+    display: inline-flex;
+  }
+}
+
+@keyframes culture-ribbon-flow {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* Current reading position, using the same coastal palette as the section links. */
+.home-quick-nav > a {
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+  padding-inline: 12px;
+  border-radius: 7px;
+  overflow-wrap: anywhere;
+  transition: color .2s, background .2s;
+}
+
+.home-quick-nav > a::after {
+  content: "";
+  position: absolute;
+  inset: auto 12px 4px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--sun);
+  transform: scaleX(0);
+  transform-origin: left;
+  pointer-events: none;
+  transition: transform .24s var(--experience-ease);
+}
+
+.home-quick-nav > a:is(.is-current, [aria-current="location"]) {
+  background: var(--coast);
+  color: var(--paper);
+  text-decoration: none;
+}
+
+.home-quick-nav > a:is(.is-current, [aria-current="location"])::after {
+  transform: scaleX(1);
+}
+
+.home-quick-nav > a:is(.is-current, [aria-current="location"]) svg {
+  color: var(--sun);
+}
+
+/* Small marks accompany the existing dates, without shifting their rows on hover. */
+.timeline article,
+.timeline article:hover {
+  padding-inline-start: 0;
+  background: none;
+  transition: border-color .2s;
+}
+
+.timeline article::before,
+.timeline article:hover::before {
+  top: 24px;
+  bottom: 24px;
+  width: 1px;
+  background: var(--line);
+  transform: none;
+  pointer-events: none;
+}
+
+.timeline time {
+  position: relative;
+  padding-inline-start: 18px;
+}
+
+.timeline time::before {
+  content: "";
+  position: absolute;
+  top: .6em;
+  left: -2px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--tide);
+  box-shadow: 0 0 0 4px #e9bc5829;
+  pointer-events: none;
+  transition: background .2s, box-shadow .2s;
+}
+
+.timeline article:is(:hover, :focus-within) time::before {
+  background: var(--coast);
+  box-shadow: 0 0 0 5px #e9bc5842;
+}
+
+.motion-paused .culture-ribbon-track,
+.motion-paused .motion-decor::before,
+.motion-paused .motion-decor::after {
+  animation-play-state: paused !important;
+}
+
+.motion-paused .motion-surface,
+.motion-paused .motion-surface::after {
+  transition: none;
+}
+
+@media (max-width: 640px) {
+  .home-quick-nav > a {
+    padding-inline: 8px;
+  }
+
+  .motion-decor::before,
+  .motion-decor::after {
+    border-color: #245c6020;
+  }
+
+  .home-route.motion-decor::before,
+  .home-route.motion-decor::after {
+    border-color: #e9bc5830;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .culture-marquee > .culture-ribbon-track,
+  .motion-decor::before,
+  .motion-decor::after {
+    animation: none !important;
+    translate: none !important;
+  }
+
+  .culture-marquee > .culture-ribbon-track {
+    transform: none !important;
+  }
+
+  .culture-marquee .ribbon-control,
+  .culture-ribbon-group + .culture-ribbon-group {
+    display: none !important;
+  }
+
+  .motion-surface,
+  .motion-surface:hover,
+  .motion-surface:focus-within {
+    translate: none !important;
+    transform: none !important;
+  }
+
+  .motion-surface::after {
+    display: none !important;
+  }
+}
