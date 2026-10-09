@@ -60,6 +60,7 @@ export function MotionEffects() {
     const configureNavigation = () => {
       navObserver?.disconnect();
       visibleSections.clear();
+      const marker = Math.round(window.innerHeight * .32);
       navObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) visibleSections.add(entry.target);
@@ -72,8 +73,9 @@ export function MotionEffects() {
           else link.removeAttribute("aria-current");
         });
       }, {
+        // A one-pixel marker avoids choosing a sliver of the previous section.
         // IntersectionObserver percentages use viewport width, not height.
-        rootMargin: `-${Math.round(window.innerHeight * .12)}px 0px -${Math.round(window.innerHeight * .48)}px 0px`,
+        rootMargin: `-${marker}px 0px -${Math.max(window.innerHeight - marker - 1, 0)}px 0px`,
         threshold: 0,
       });
       navTargets.forEach((target) => { if (target) navObserver?.observe(target); });

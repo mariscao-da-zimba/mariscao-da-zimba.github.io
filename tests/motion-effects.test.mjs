@@ -437,13 +437,15 @@ test('scrollspy usa altura em pixels e recalcula a faixa ao redimensionar sem re
   h.window.innerHeight = 1080;
   h.mount();
   const initial = h.observers.find((observer) => observer.observed.has(h.firstSection));
-  assert.equal(initial.options.rootMargin, '-130px 0px -518px 0px');
+  assert.equal(initial.options.rootMargin, '-346px 0px -733px 0px');
+  const [top, , bottom] = initial.options.rootMargin.split(' ').map(Number.parseFloat);
+  assert.equal(h.window.innerHeight + top + bottom, 1, 'Marcador de um pixel não inclui faixa residual da seção anterior');
   const animationCount = h.animations.length;
   h.window.innerHeight = 844;
   h.emit(h.window, 'resize');
   const current = h.observers.findLast((observer) => observer.observed.has(h.firstSection));
   assert.ok(initial.disconnected);
-  assert.equal(current.options.rootMargin, '-101px 0px -405px 0px');
+  assert.equal(current.options.rootMargin, '-270px 0px -573px 0px');
   assert.equal(h.animations.length, animationCount);
   assert.equal(h.frames.size, 1);
   h.flush();
