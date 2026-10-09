@@ -51,6 +51,7 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
       - run: npm ci
+      - run: npm run security:audit
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build

@@ -19,7 +19,7 @@ jobs:
           ref: main
           fetch-depth: 0
       - id: update
-        name: Conferir e integrar os 16 arquivos revisados
+        name: Conferir 16 arquivos e integrar os 11 arquivos de fonte
         shell: bash
         run: |
           set -euo pipefail
@@ -50,9 +50,21 @@ jobs:
           stage=$(mktemp -d "$RUNNER_TEMP/mariscao-revisao.XXXXXX")
           # Extract to staging without filename patterns: [slug] must remain literal.
           unzip -q "$package" -d "$stage"
+          source_files=()
+          for file in "${files[@]}"; do
+            if [[ "$file" == .github/workflows/* ]]; then
+              # GITHUB_TOKEN cannot edit workflows. They must already match the UI-reviewed files.
+              if [ ! -f "$file" ] || ! cmp -s <(sed 's/\r$//' "$stage/$file") <(sed 's/\r$//' "$file"); then
+                echo "Workflow ainda não corresponde ao arquivo revisado: $file"
+                exit 1
+              fi
+            else
+              source_files+=("$file")
+            fi
+          done
           all_current=true
           for file in "${files[@]}"; do
-            if [ ! -f "$file" ] || ! cmp -s "$stage/$file" "$file"; then
+            if [ ! -f "$file" ] || ! cmp -s <(sed 's/\r$//' "$stage/$file") <(sed 's/\r$//' "$file"); then
               all_current=false
               break
             fi
@@ -62,14 +74,14 @@ jobs:
             exit 0
           fi
           # Do not overwrite intervening changes in the exact target paths.
-          git --literal-pathspecs diff --quiet 5eff6f3a5c7ad47f00d4bcdd2f5c0929e25f890f HEAD -- "${files[@]}"
-          for file in "${files[@]}"; do
+          git --literal-pathspecs diff --quiet 5eff6f3a5c7ad47f00d4bcdd2f5c0929e25f890f HEAD -- "${source_files[@]}"
+          for file in "${source_files[@]}"; do
             mkdir -p "$(dirname "$file")"
             cp -- "$stage/$file" "$file"
           done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git --literal-pathspecs add -- "${files[@]}"
+          git --literal-pathspecs add -- "${source_files[@]}"
           git commit -m "Corrigir redação e SEO e adicionar controle explícito dos alertas de desenvolvimento"
           git push origin HEAD:main
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"

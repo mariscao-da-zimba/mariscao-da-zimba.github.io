@@ -79,6 +79,7 @@ jobs:
           BASE_URL: ${{ steps.pages.outputs.base_url }}
         run: node -e "if(new URL(process.env.BASE_URL).pathname.replaceAll('/','')) throw new Error('Esta edição requer hospedagem na raiz do domínio.')"
       - run: npm ci
+      - run: npm run security:audit
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build
