@@ -6,6 +6,7 @@
     "node": ">=24.0.0"
   },
   "scripts": {
+    "security:audit": "node scripts/audit-dependencies.mjs",
     "test:release": "node tests/release-audit.mjs",
     "dev": "vinext dev",
     "build": "vinext build && node scripts/finalize-pages.mjs",

@@ -8,7 +8,7 @@ import { site } from "../../../content/site";
 import { Breadcrumb, PageHero, Section, StatusBadge } from "../../../components/ui";
 
 export async function generateStaticParams(){return projects.map(({slug})=>({slug}))}
-export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const project=getProject((await params).slug);if(!project)return{};return createPageMetadata({title:project.title,description:project.excerpt,path:`/projetos/${project.slug}`})}
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}):Promise<Metadata>{const project=getProject((await params).slug);if(!project)return{};const title=project.slug==="caminho-dos-butiazais"?"Projeto Caminho dos Butiazais":project.title;return createPageMetadata({title,description:project.excerpt,path:`/projetos/${project.slug}`})}
 
 export default async function ProjectPage({params}:{params:Promise<{slug:string}>}){const requestedSlug=(await params).slug;if(legacyProjectRedirects[requestedSlug])permanentRedirect(`/projetos/${legacyProjectRedirects[requestedSlug]}`);const project=getProject(requestedSlug);if(!project)notFound();const links=project.resources||[];const whatsapp=`${site.social.whatsapp}?text=${encodeURIComponent(`Olá! Gostaria de saber mais sobre o projeto ${project.title}.`)}`;return <main>
   <Breadcrumb items={[["Início","/"],["Projetos","/projetos"],[project.title]]}/><PageHero kicker={project.categories.join(" · ")} title={project.title} intro={project.excerpt}/>

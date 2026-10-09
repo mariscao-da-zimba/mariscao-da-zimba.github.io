@@ -1,5 +1,11 @@
 # Manutenção da edição GitHub Pages
 
+## Redação, SEO e checagem de segurança — 09/10/2026
+
+A referência de Porto Belo reproduz o título publicado, sem a crase acrescentada. O roteiro usa o título SEO “Guia do Caminho dos Butiazais” e a ficha do projeto usa “Projeto Caminho dos Butiazais”; H1, URLs, conteúdo, imagens e layout continuam iguais. `tests/editorial-seo.test.mjs` confere o HTML exportado, títulos sociais e canonicals.
+
+Leia `SECURITY.md` e execute `npm run security:audit` antes de publicar. Não foi encontrada versão oficial corrigida para braces nesta revisão; os sete alertas de desenvolvimento permanecem visíveis. O novo gate permite somente essa cadeia e versões revisadas, com exceção temporária até 08/11/2026 23:59:59 UTC; novos alertas, produção, erro de consulta ou mudança de escopo/versão bloqueiam. Isso é controle de publicação, não patch da biblioteca. Não renovar a exceção nem forçar downgrade automaticamente. O Pages já publicado não é desligado se o gate bloquear uma atualização futura.
+
 ## Seleção musical da Home e retirada da faixa — 09/10/2026
 
 Por escolha do proprietário, a Home destaca somente Rosa de ouro., Vem brincar com a Turma do Mar. e Vem com a turma da maré., nessa ordem. A seleção explícita fica em `featuredMusicVideos`, em `content/music-videos.ts`; não depende mais dos três primeiros itens da coleção geral. Cultura continua com os oito vídeos, incluindo Memórias Afetivas e os demais Shorts, na ordem anterior. O link “Ver todos os 8 vídeos” leva diretamente à seção completa.
