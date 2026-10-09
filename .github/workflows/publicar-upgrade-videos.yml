@@ -23,8 +23,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          package=MOTION-2026-10-09.zip
-          echo '3e6c2877c6a64d01bf0922c00e8428896819b96fd2916df374555b63400ea641  MOTION-2026-10-09.zip' | sha256sum --check --strict
+          package=MOTION-2026-10-09-v2.zip
+          echo 'e8427e5ebb22034e735c732bb0e0f5618f6a405e8ad550577aaa5620e4afee9b  MOTION-2026-10-09-v2.zip' | sha256sum --check --strict
           files=(
             MANUTENCAO.md
             MOTION-2026-10-09.md
@@ -51,7 +51,7 @@ jobs:
             exit 0
           fi
           # Do not overwrite intervening changes in the exact target paths.
-          git diff --quiet 083a12c14624489b9fe398ae5ee0a1b35a923698 HEAD -- "${files[@]}"
+          git diff --quiet 32f0c851270de33597778076d9462f6e20a2672e HEAD -- "${files[@]}"
           unzip -o "$package" "${files[@]}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
