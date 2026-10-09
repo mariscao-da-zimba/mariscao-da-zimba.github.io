@@ -1,4 +1,4 @@
-name: Integrar e publicar músicas da Turma da Maré
+name: Integrar e publicar movimento cultural
 on:
   workflow_dispatch:
 permissions:
@@ -19,30 +19,21 @@ jobs:
           ref: main
           fetch-depth: 0
       - id: update
-        name: Conferir e integrar os 17 arquivos da seleção musical
+        name: Conferir e integrar os oito arquivos do upgrade visual
         shell: bash
         run: |
           set -euo pipefail
-          package=MUSICAS-2026-10-08.zip
-          echo 'd8a6c81f7fe83aa48c3ea8d19daa84359eff33b7b3449825d0e3195fea7b5755  MUSICAS-2026-10-08.zip' | sha256sum --check --strict
+          package=MOTION-2026-10-09.zip
+          echo '3e6c2877c6a64d01bf0922c00e8428896819b96fd2916df374555b63400ea641  MOTION-2026-10-09.zip' | sha256sum --check --strict
           files=(
             MANUTENCAO.md
-            MUSICAS-2026-10-08.md
-            app/acervo/page.tsx
+            MOTION-2026-10-09.md
+            app/layout.tsx
             app/page.tsx
-            app/refinement.css
-            components/music-videos.tsx
-            content/memory-video.ts
-            content/music-videos.ts
-            content/projects.ts
-            content/sources.ts
-            public/images/official/memorias-afetivas-youtube.jpg
-            public/images/official/turma-da-mare-MNs9cumpuG4.jpg
-            public/images/official/turma-da-mare-NKE_dPCSaS8.jpg
-            public/images/official/turma-da-mare-SYe6g2kYT4k.jpg
-            public/images/official/turma-da-mare-cr5e8GIuJRY.jpg
-            tests/music-assets.test.mjs
-            tests/static-export.test.mjs
+            app/experience.css
+            components/motion-effects.tsx
+            components/culture-ribbon.tsx
+            tests/motion-effects.test.mjs
           )
           # Reject unexpected paths before extraction, including workflow or secret files.
           unzip -Z1 "$package" | sort > "$RUNNER_TEMP/revisao-archive.txt"
@@ -60,12 +51,12 @@ jobs:
             exit 0
           fi
           # Do not overwrite intervening changes in the exact target paths.
-          git diff --quiet 2a48cac0dcf38c4174e2348e5d2fcb4eca0ee70f HEAD -- "${files[@]}"
+          git diff --quiet 083a12c14624489b9fe398ae5ee0a1b35a923698 HEAD -- "${files[@]}"
           unzip -o "$package" "${files[@]}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- "${files[@]}"
-          git commit -m "Ampliar músicas da Turma da Maré com Memórias Afetivas e quatro Shorts"
+          git commit -m "Aprimorar experiência visual com movimento cultural acessível"
           git push origin HEAD:main
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   build:
