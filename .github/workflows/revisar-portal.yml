@@ -1,4 +1,4 @@
-name: Aplicar e publicar revisão completa
+name: Aplicar e publicar correções finais
 on:
   workflow_dispatch:
 permissions:
@@ -19,44 +19,24 @@ jobs:
           ref: main
           fetch-depth: 0
       - id: update
-        name: Conferir e integrar os 31 arquivos auditados
+        name: Conferir e integrar os 11 arquivos corrigidos
         shell: bash
         run: |
           set -euo pipefail
-          package=CORRECOES-2026-10-08.zip
-          echo '5e7303c73b4a6aba9550816bc78fcde08d13e32e01f023beb6e970ba42990532  CORRECOES-2026-10-08.zip' | sha256sum --check --strict
+          package=CORRECOES-2026-10-09.zip
+          echo '65188d9d65f1d46e0c6d3b97a3c6fac0bfea76cf7228e8644986cd11b24aa618  CORRECOES-2026-10-09.zip' | sha256sum --check --strict
           files=(
-            .gitignore
-            CORRECOES-2026-10-08.md
+            CORRECOES-2026-10-09.md
             MANUTENCAO.md
-            app/acervo/page.tsx
-            app/agenda/page.tsx
-            app/caminho-dos-butiazais/page.tsx
-            app/educacao-ambiental/page.tsx
-            app/fontes/page.tsx
-            app/minimal.css
-            app/page.tsx
+            app/experience.css
+            app/memoria/page.tsx
+            app/privacidade/page.tsx
             app/refinement.css
-            components/contact-form.tsx
-            components/contact-message.ts
-            components/ui.tsx
-            content/events.ts
-            content/guide-document.json
-            content/guide-text-overrides.json
-            content/highlights.ts
-            content/projects.ts
-            content/site.ts
-            content/sources.ts
-            content/types.ts
-            package-lock.json
-            package.json
-            public/documentos/guia-caminho-dos-butiazais.pdf
-            scripts/ocr-guide.mjs
-            scripts/restore-guide-text.py
-            scripts/verify-guide.py
-            tests/content-regressions.test.mjs
-            tests/guide-document.test.mjs
-            tests/ui-regressions.test.mjs
+            components/culture-ribbon.tsx
+            components/motion-effects.tsx
+            tests/dark-heading-contrast.test.mjs
+            tests/motion-effects.test.mjs
+            tests/privacy-memory.test.mjs
           )
           # Reject unexpected paths before extraction, including workflow or secret files.
           unzip -Z1 "$package" | sort > "$RUNNER_TEMP/revisao-archive.txt"
@@ -74,12 +54,12 @@ jobs:
             exit 0
           fi
           # Do not overwrite intervening changes in the exact target paths.
-          git diff --quiet 5e10bed31de1cfefd279688c55f152e626942ffa HEAD -- "${files[@]}"
+          git diff --quiet 630471db492f9537acbc528cac14d668111d296d HEAD -- "${files[@]}"
           unzip -o "$package" "${files[@]}"
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- "${files[@]}"
-          git commit -m "Corrigir conteúdo, links, contraste, contato e busca no guia após auditoria"
+          git commit -m "Corrigir contraste, memória, privacidade e persistência dos efeitos visuais"
           git push origin HEAD:main
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   build:
