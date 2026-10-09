@@ -1,4 +1,4 @@
-name: Atualizar destaques musicais e retirar faixa
+name: Publicar ajustes de SEO e controle de seguranca
 on:
   workflow_dispatch:
 permissions:
@@ -19,28 +19,40 @@ jobs:
           ref: main
           fetch-depth: 0
       - id: update
-        name: Conferir e integrar os 7 arquivos da Home
+        name: Conferir e integrar os 16 arquivos revisados
         shell: bash
         run: |
           set -euo pipefail
-          package=HOME-MUSICAS-2026-10-09-v2.zip
-          echo '41a1447976111ec02523296e0a615ce5beea30414166e22b916d370055e79350  HOME-MUSICAS-2026-10-09-v2.zip' | sha256sum --check --strict
+          package=SEO-SEGURANCA-2026-10-09.zip
+          echo 'f31e9014371c147e96f6b34bcf3504d7ae10e3d17125601a32ede78e7c81f6c9  SEO-SEGURANCA-2026-10-09.zip' | sha256sum --check --strict
           files=(
-            HOME-MUSICAS-2026-10-09.md
-            MANUTENCAO.md
-            app/page.tsx
-            app/refinement.css
-            components/music-videos.tsx
-            content/music-videos.ts
-            tests/static-export.test.mjs
+            '.github/workflows/ampliar-praias-video.yml'
+            '.github/workflows/atualizar-butiazinho.yml'
+            '.github/workflows/pages.yml'
+            '.github/workflows/publicar-praias-video.yml'
+            '.github/workflows/publicar-upgrade-videos.yml'
+            'AJUSTES-SEO-SEGURANCA-2026-10-09.md'
+            'MANUTENCAO.md'
+            'SECURITY.md'
+            'app/caminho-dos-butiazais/page.tsx'
+            'app/projetos/[slug]/page.tsx'
+            'content/sources.ts'
+            'package.json'
+            'scripts/audit-dependencies.mjs'
+            'scripts/dependency-audit-policy.mjs'
+            'tests/dependency-audit-policy.test.mjs'
+            'tests/editorial-seo.test.mjs'
           )
-          # Reject unexpected paths before extraction, including workflow or secret files.
+          # Only the exact reviewed paths are allowed, including five scoped CI edits.
           unzip -Z1 "$package" | sort > "$RUNNER_TEMP/revisao-archive.txt"
           printf '%s\n' "${files[@]}" | sort > "$RUNNER_TEMP/revisao-expected.txt"
           diff -u "$RUNNER_TEMP/revisao-expected.txt" "$RUNNER_TEMP/revisao-archive.txt"
+          stage=$(mktemp -d "$RUNNER_TEMP/mariscao-revisao.XXXXXX")
+          # Extract to staging without filename patterns: [slug] must remain literal.
+          unzip -q "$package" -d "$stage"
           all_current=true
           for file in "${files[@]}"; do
-            if [ ! -f "$file" ] || ! unzip -p "$package" "$file" | cmp -s "$file" -; then
+            if [ ! -f "$file" ] || ! cmp -s "$stage/$file" "$file"; then
               all_current=false
               break
             fi
@@ -50,12 +62,15 @@ jobs:
             exit 0
           fi
           # Do not overwrite intervening changes in the exact target paths.
-          git diff --quiet 0d2dc934387702223b038e2313a76a8272750809 HEAD -- "${files[@]}"
-          unzip -o "$package" "${files[@]}"
+          git --literal-pathspecs diff --quiet 5eff6f3a5c7ad47f00d4bcdd2f5c0929e25f890f HEAD -- "${files[@]}"
+          for file in "${files[@]}"; do
+            mkdir -p "$(dirname "$file")"
+            cp -- "$stage/$file" "$file"
+          done
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- "${files[@]}"
-          git commit -m "Destacar as três músicas escolhidas na Home e retirar a faixa rolante"
+          git --literal-pathspecs add -- "${files[@]}"
+          git commit -m "Corrigir redação e SEO e adicionar controle explícito dos alertas de desenvolvimento"
           git push origin HEAD:main
           echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
   build:
@@ -78,6 +93,7 @@ jobs:
           BASE_URL: ${{ steps.pages.outputs.base_url }}
         run: node -e "if(new URL(process.env.BASE_URL).pathname.replaceAll('/','')) throw new Error('Esta edição requer hospedagem na raiz do domínio.')"
       - run: npm ci
+      - run: npm run security:audit
       - run: npm run lint
       - run: npm run typecheck
       - run: npm run build
