@@ -1,5 +1,13 @@
 # Manutenção da edição GitHub Pages
 
+## Seleção musical da Home e retirada da faixa — 09/10/2026
+
+Por escolha do proprietário, a Home destaca somente Rosa de ouro., Vem brincar com a Turma do Mar. e Vem com a turma da maré., nessa ordem. A seleção explícita fica em `featuredMusicVideos`, em `content/music-videos.ts`; não depende mais dos três primeiros itens da coleção geral. Cultura continua com os oito vídeos, incluindo Memórias Afetivas e os demais Shorts, na ordem anterior. O link “Ver todos os 8 vídeos” leva diretamente à seção completa.
+
+`app/page.tsx` não importa nem renderiza mais CultureRibbon: a faixa com nomes rolando e o botão de pausa foram retirados. O componente e seus estilos antigos permanecem não utilizados, para não ampliar este ajuste a uma limpeza geral de CSS/hook. A descrição da faixa nas correções anteriores abaixo é um registro histórico, não uma indicação de que ela ainda aparece na Home.
+
+`tests/static-export.test.mjs` verifica a seleção exata da Home, preservação integral de Cultura, capas locais, acesso aos vídeos após clique e ausência da faixa/controle na página inicial. Relatório: `HOME-MUSICAS-2026-10-09.md`.
+
 ## Correções da revisão final — 09/10/2026
 
 Base publicada: `630471db492f9537acbc528cac14d668111d296d`. Os quatro defeitos da auditoria foram tratados sem mudar fotografias, vídeos, projetos, pontos, rotas ou dependências.

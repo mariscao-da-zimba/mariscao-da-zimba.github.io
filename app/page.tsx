@@ -4,7 +4,6 @@ import { ButiazinhoFeature } from "../components/butiazinho-feature";
 import { TributeVideo } from "../components/tribute-video";
 import { MusicVideos } from "../components/music-videos";
 import { CoastalVideos } from "../components/coastal-videos";
-import { CultureRibbon } from "../components/culture-ribbon";
 import { guideImageSrcSet, landmarks } from "../content/landmarks";
 import { projects } from "../content/projects";
 import { timeline } from "../content/site";
@@ -38,7 +37,6 @@ export default function Home() {
         </div>
         <figure className="hero-photo"><img src="/images/official/butiazais-hero-restored.webp" srcSet="/images/official/butiazais-hero-restored-720.webp 720w, /images/official/butiazais-hero-restored-1200.webp 1200w, /images/official/butiazais-hero-restored.webp 1672w" sizes="(max-width: 900px) calc(100vw - 44px), (max-width: 1180px) calc(50vw - 36px), 650px" alt="Vista aérea dos butiazais e do litoral de Imbituba" width="1672" height="941" fetchPriority="high" decoding="async"/><figcaption><span>01</span> Butiazais de Imbituba <small>Frame restaurado do documentário oficial</small></figcaption></figure>
       </section>
-      <CultureRibbon />
       <nav className="home-quick-nav" aria-label="Experiências do Mariscão">
         <a href="#homenagem"><Play aria-hidden="true"/>Homenagem a Imbituba</a>
         <a href="#musicas-da-mare"><Music aria-hidden="true"/>Músicas da Turma</a>

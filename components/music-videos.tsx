@@ -2,13 +2,13 @@
 "use client";
 
 import { ArrowUpRight, Play, X } from "lucide-react";
-import { musicChannel, musicVideos } from "../content/music-videos";
+import { featuredMusicVideos, musicChannel, musicVideos } from "../content/music-videos";
 import { useMediaPlayback } from "./use-media-playback";
 import Link from "./document-link";
 
 export function MusicVideos({ id = "musicas-da-mare", selection = "all" }: { id?: string; selection?: "featured" | "all" }) {
   const { active, player, open, close, buttonRef } = useMediaPlayback();
-  const videos = selection === "featured" ? musicVideos.slice(0, 3) : musicVideos;
+  const videos = selection === "featured" ? featuredMusicVideos : musicVideos;
 
   return (
     <section className="music-feature" data-selection={selection} id={id} aria-labelledby={`${id}-title`}>

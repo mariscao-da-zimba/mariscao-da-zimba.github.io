@@ -22,7 +22,7 @@ export type MusicVideo = {
 
 export const musicSelectionCheckedOn = "2026-10-08";
 
-// Newest first; Home previews three, Cultura preserves the complete selection.
+// Complete collection, newest first; Home uses the explicit curated selection below.
 // The creator explicitly includes Memórias Afetivas in this musical selection.
 export const musicVideos: readonly MusicVideo[] = [
   { ...memoryVideo, format: "video", sourceId: "memorias-afetivas" },
@@ -55,3 +55,14 @@ export const musicVideos: readonly MusicVideo[] = [
     image: "/images/official/turma-da-mare-BcA7YE2Vt9s.jpg",
     imageWidth: 1280, imageHeight: 720, format: "short", sourceId: "musica-turma-mar" },
 ] as const;
+
+// Home order chosen by the creator; keep the complete Cultura collection unchanged.
+export const featuredMusicVideos: readonly MusicVideo[] = [
+  "gq3BJ_1M11k", // Rosa de ouro.
+  "BcA7YE2Vt9s", // Vem brincar com a Turma do Mar.
+  "EczZf3JCFgY", // Vem com a turma da maré.
+].map((videoId) => {
+  const video = musicVideos.find((item) => item.videoId === videoId);
+  if (!video) throw new Error(`Vídeo musical em destaque não encontrado: ${videoId}`);
+  return video;
+});

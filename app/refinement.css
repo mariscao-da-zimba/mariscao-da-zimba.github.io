@@ -530,6 +530,12 @@ button, a, input, textarea, select { -webkit-tap-highlight-color: #e9bc5855; }
 .music-feature[data-selection="featured"] .music-card:not(.is-horizontal) .music-play-badge { left: 8px; right: 8px; bottom: 12px; flex-direction: column; gap: 5px; font-size: .625rem; }
 .music-feature[data-selection="featured"] .music-card.is-playing:not(.is-horizontal) { display: block; }
 .music-feature[data-selection="featured"] .music-card.is-playing:not(.is-horizontal) .music-card-visual { max-width: 320px; margin-inline: auto; }
+@media(min-width:1100px) {
+  .music-feature[data-selection="featured"] .music-grid { grid-template-columns: repeat(3,minmax(0,1fr)); }
+  .music-feature[data-selection="featured"] .music-card:not(.is-horizontal) { grid-template-columns: 100px minmax(0,1fr); }
+  .music-feature[data-selection="featured"] .music-card-body { padding: 18px; }
+  .music-feature[data-selection="featured"] .music-card h3 { font-size: clamp(1.35rem,1.6vw,1.65rem); }
+}
 @media(hover:hover) and (prefers-reduced-motion:no-preference) {
   .tribute-play-icon { transition: transform .2s ease; }
   .tribute-play:hover .tribute-play-icon { transform: scale(1.08); }

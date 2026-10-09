@@ -92,12 +92,12 @@ test('homenagem tem capa local e acesso sem JavaScript, sem player inicial', asy
   assert.ok((await stat(join(root, 'images/official/homenagem-imbituba-youtube.jpg'))).size > 0);
 });
 
-test('Home destaca Memórias Afetivas e dois Shorts novos; Cultura reúne os oito vídeos musicais com fallback sem player inicial', async () => {
+test('Home mostra Rosa de ouro, Turma do Mar e Turma da Maré nessa ordem; Cultura preserva os oito vídeos com fallback sem player inicial', async () => {
   const memoriesId = 'B5Bcz79Dnt8';
   const newIds = ['MNs9cumpuG4', 'NKE_dPCSaS8', 'cr5e8GIuJRY', 'SYe6g2kYT4k'];
   const previousIds = ['EczZf3JCFgY', 'gq3BJ_1M11k', 'BcA7YE2Vt9s'];
   const allIds = [memoriesId, ...newIds, ...previousIds];
-  const featuredIds = allIds.slice(0, 3);
+  const featuredIds = ['gq3BJ_1M11k', 'BcA7YE2Vt9s', 'EczZf3JCFgY'];
   const videoUrl = (id) => id === memoriesId ? `https://www.youtube.com/watch?v=${id}` : `https://www.youtube.com/shorts/${id}`;
   const videoImage = (id) => id === memoriesId ? '/images/official/memorias-afetivas-youtube.jpg' : `/images/official/turma-da-mare-${id}.jpg`;
   assert.equal(new Set(allIds).size, 8, 'Os oito vídeos musicais devem ter IDs únicos');
@@ -129,14 +129,17 @@ test('Home destaca Memórias Afetivas e dois Shorts novos; Cultura reúne os oit
       const classes = article.class?.split(/\s+/) ?? [];
       return classes.includes('music-card') && classes.includes('is-horizontal');
     });
-    assert.equal(horizontalCards.length, 1, `${label}: apenas Memórias Afetivas usa o formato horizontal`);
-    assert.equal(horizontalCards[0]['aria-labelledby'], `musicas-da-mare-${memoriesId}-title`,
-      `${label}: identificar o vídeo horizontal para manter seu enquadramento no celular`);
+    const normalVideoCount = ids.includes(memoriesId) ? 1 : 0;
+    assert.equal(horizontalCards.length, normalVideoCount, `${label}: apenas Memórias Afetivas usa o formato horizontal`);
+    if (normalVideoCount) {
+      assert.equal(horizontalCards[0]['aria-labelledby'], `musicas-da-mare-${memoriesId}-title`,
+        `${label}: identificar o vídeo horizontal para manter seu enquadramento no celular`);
+    }
     const formatLabels = [...html.matchAll(/<p\b[^>]*class="music-card-label"[^>]*>([\s\S]*?)<\/p>/gi)]
       .map(([, text]) => decodeHtml(text.replace(/<!--[\s\S]*?-->|<[^>]*>/g, '')).replace(/\s+/g, ' '));
-    assert.equal(formatLabels.filter((text) => text.startsWith('Vídeo musical')).length, 1,
+    assert.equal(formatLabels.filter((text) => text.startsWith('Vídeo musical')).length, normalVideoCount,
       `${label}: informar o formato normal de Memórias Afetivas`);
-    assert.equal(formatLabels.filter((text) => text.startsWith('Short musical')).length, ids.length - 1,
+    assert.equal(formatLabels.filter((text) => text.startsWith('Short musical')).length, ids.length - normalVideoCount,
       `${label}: informar os formatos curtos das canções`);
     assert.doesNotMatch(html, /Três vídeos musicais/);
   }
@@ -144,7 +147,7 @@ test('Home destaca Memórias Afetivas e dois Shorts novos; Cultura reúne os oit
     assert.ok((await stat(localFile(videoImage(id)))).size > 0,
       `Capa ausente ou vazia: ${id}`);
   }
-  for (const id of allIds.slice(3)) {
+  for (const id of allIds.filter((id) => !featuredIds.includes(id))) {
     assert.ok(!tags(home, 'a').some((link) => link.href === videoUrl(id)),
       `Home: reservar a música ${id} à seleção completa em Cultura`);
   }
@@ -181,6 +184,17 @@ test('Home destaca Memórias Afetivas e dois Shorts novos; Cultura reúne os oit
     assert.equal(tags(fontes, 'a').filter((link) => link.href === videoUrl(videoId)).length, 1,
       `Fontes: origem verificável da música ${videoId}`);
   }
+});
+
+test('Home exportada não contém a faixa cultural rolante nem seu controle de pausa', async () => {
+  const home = withoutScripts(await readFile(join(root, 'index.html'), 'utf8'));
+  const elements = [...home.matchAll(/<[a-z][\w:-]*\b[^>]*>/gi)].map(([tag]) => attributes(tag));
+  assert.ok(!elements.some((element) => element.class?.split(/\s+/).includes('culture-marquee')),
+    'Remover o componente da faixa da Home');
+  assert.ok(!elements.some((element) => element.id === 'culture-ribbon-track'),
+    'A faixa não deve permanecer oculta no HTML da Home');
+  assert.ok(!tags(home, 'button').some((button) => button.class?.split(/\s+/).includes('ribbon-control') || button['aria-controls'] === 'culture-ribbon-track'),
+    'Remover também o botão de pausar/retomar a faixa');
 });
 
 test('Praia do Porto preserva três vídeos na Home e a galeria reúne 19 vídeos únicos, com capas locais e acesso sem player inicial', async () => {
