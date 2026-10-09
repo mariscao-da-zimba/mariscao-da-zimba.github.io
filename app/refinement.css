@@ -112,7 +112,8 @@ h1, h2, h3 { font-kerning: normal; }
 .page-hero:after { opacity: .4; animation-duration: 30s; }
 .route-card, .archive-card, .memory-card { border-radius: 5px; }
 .route-card h3, .content-heading h2 { color: var(--coast); line-height: 1.1; }
-.content-section.dark .content-heading h2 { color: white; }
+.content-section.dark .content-heading h2,
+.content-section.threat-section .content-heading h2 { color: var(--paper); }
 .cursor-aura { display: none!important; }
 .motion-paused *, .motion-paused *:before, .motion-paused *:after { animation-play-state: paused!important; }
 .motion-card { will-change: auto; }

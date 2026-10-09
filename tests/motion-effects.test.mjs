@@ -4,6 +4,7 @@ import { readFile } from 'node:fs/promises';
 import { runInNewContext } from 'node:vm';
 import { setMaxListeners } from 'node:events';
 import ts from 'typescript';
+import postcss from 'postcss';
 
 // Execute the real hook with deterministic browser primitives. No timers or
 // browser automation are needed to exercise preference changes and teardown.
@@ -11,6 +12,43 @@ const source = await readFile(new URL('../components/motion-effects.tsx', import
 const compiled = ts.transpileModule(source, {
   compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 },
 }).outputText;
+const ribbonCompiled = ts.transpileModule(await readFile(new URL('../components/culture-ribbon.tsx', import.meta.url), 'utf8'), {
+  compilerOptions: { module: ts.ModuleKind.CommonJS, jsx: ts.JsxEmit.ReactJSX, target: ts.ScriptTarget.ES2022 },
+}).outputText;
+const css = postcss.parse(await readFile(new URL('../app/experience.css', import.meta.url), 'utf8'));
+
+// Evaluate the actual halo and pause selectors against the harness DOM, including :is().
+function splitSelectors(value) {
+  const selectors = [];
+  let depth = 0, start = 0;
+  for (let index = 0; index < value.length; index++) {
+    if (value[index] === '(') depth++;
+    else if (value[index] === ')') depth--;
+    else if (value[index] === ',' && depth === 0) { selectors.push(value.slice(start, index).trim()); start = index + 1; }
+  }
+  selectors.push(value.slice(start).trim());
+  return selectors;
+}
+function expandSelectors(value) {
+  return splitSelectors(value).flatMap((selector) => {
+    const start = selector.indexOf(':is(');
+    if (start === -1) return [selector.replaceAll('::after', '')];
+    let end = start + 4, depth = 1;
+    while (depth && end < selector.length) {
+      if (selector[end] === '(') depth++;
+      else if (selector[end] === ')') depth--;
+      end++;
+    }
+    return splitSelectors(selector.slice(start + 4, end - 1)).flatMap((choice) =>
+      expandSelectors(selector.slice(0, start) + choice + selector.slice(end)));
+  });
+}
+const haloSelectors = [], pauseSelectors = [];
+css.walkRules((rule) => {
+  if (rule.nodes.some((node) => node.prop === 'background' && node.value.includes('var(--surface-x'))) haloSelectors.push(...expandSelectors(rule.selector));
+  if (rule.nodes.some((node) => node.prop === 'animation-play-state' && node.value === 'paused')) pauseSelectors.push(...expandSelectors(rule.selector));
+});
+const hasHalo = (element) => haloSelectors.some((selector) => element.matches(selector));
 
 class TrackedTarget extends EventTarget {
   listeners = [];
@@ -217,7 +255,7 @@ function harness({ reduced = false, fine = true, hidden = false, intersection = 
   return {
     root, header, document, window, reducedQuery, fineQuery, elements, frames, observers, animations, markup,
     hero: [heroEyebrow, heroTitleSpan, heroTitleEm, heroLead, heroActions, heroPhoto], visibleCard, reveal, decor, marquee,
-    surface, surfaceChild, firstLink, secondLink, firstSection, secondSection, music, coastal,
+    surface, surfaceChild, firstLink, secondLink, firstSection, secondSection, music, coastal, element,
     mount() { for (const effect of effects) { const cleanup = effect(); if (cleanup) cleanups.push(cleanup); } },
     cleanup() { for (const cleanup of cleanups.splice(0)) cleanup(); },
     emit, flush, intersect,
@@ -299,7 +337,7 @@ test('scroll e ponteiro compartilham um frame e não criam loop quando estão oc
   assert.equal(h.frames.size, 0, 'Pintar uma vez não agenda outro frame');
   assert.equal(Number(h.root.style.getPropertyValue('--scroll-progress')), 250 / 3200);
   assert.ok(h.header.classList.contains('is-scrolled'));
-  assert.ok(h.surface.classList.contains('motion-surface'));
+  assert.ok(hasHalo(h.surface), 'CSS aplica o halo ao card sem classe imperativa');
   assert.ok(h.surface.style.getPropertyValue('--surface-x').endsWith('px'));
   assert.ok(h.surface.style.getPropertyValue('--surface-y').endsWith('px'));
   h.emit(h.document, 'pointerout', { relatedTarget: h.surfaceChild });
@@ -429,6 +467,98 @@ test('cards de vídeo não recebem revelação que possa mover um player iniciad
     assert.ok(!h.animations.some((animation) => animation.target === card));
   }
   h.cleanup();
+});
+
+test('halo volta ao fechar vídeos mesmo após React substituir className do card', () => {
+  const h = harness();
+  h.mount();
+  for (const [card, baseClass] of [[h.music, 'music-card'], [h.coastal, 'coastal-card']]) {
+    assert.ok(hasHalo(card), 'CSS reconhece o preview renderizado');
+    h.emit(h.document, 'pointermove', { target: card, pointerType: 'mouse', clientX: 300, clientY: 430 });
+    h.flush();
+    assert.ok(card.style.getPropertyValue('--surface-x'));
+    // React writes the complete className when playback changes.
+    card.classes.clear();
+    card.classList.add(baseClass, 'is-playing');
+    h.emit(h.document, 'pointermove', { target: card, pointerType: 'mouse', clientX: 300, clientY: 430 });
+    h.flush();
+    assert.ok(!hasHalo(card), 'Player em uso fica fora do halo');
+    assert.equal(card.style.getPropertyValue('--surface-x'), '');
+    assert.ok(!h.animations.some((animation) => animation.target === card));
+    card.classes.clear();
+    card.classList.add(baseClass);
+    assert.ok(hasHalo(card), 'Preview restaurado não depende de classe perdida na renderização');
+    h.emit(h.document, 'pointermove', { target: card, pointerType: 'mouse', clientX: 320, clientY: 450 });
+    h.flush();
+    assert.ok(card.style.getPropertyValue('--surface-x'));
+  }
+  h.cleanup();
+  for (const card of [h.music, h.coastal]) assert.equal(card.style.getPropertyValue('--surface-x'), '');
+});
+
+test('card recriado por filtro recebe halo e ponteiro sem reiniciar o runtime', () => {
+  const h = harness();
+  h.mount();
+  const observers = h.observers.length, animations = h.animations.length;
+  const card = h.element('a', 'project-card project-2', 400, 240, h.surface.parentElement);
+  const child = h.element('span', '', 410, 30, card);
+  assert.ok(hasHalo(card), 'CSS já contempla o novo card do catálogo');
+  h.emit(h.document, 'pointermove', { target: child, pointerType: 'mouse', clientX: 300, clientY: 430 });
+  h.flush();
+  assert.equal(card.style.getPropertyValue('--surface-x'), '200px');
+  assert.equal(card.style.getPropertyValue('--surface-y'), '30px');
+  assert.equal(h.observers.length, observers);
+  assert.equal(h.animations.length, animations);
+  h.preference(h.reducedQuery, true);
+  assert.equal(card.style.getPropertyValue('--surface-x'), '', 'Preferência reduzida limpa inclusive cards novos');
+  assert.ok(!hasHalo(card), 'Movimento reduzido remove o estado de preparação do CSS');
+  h.cleanup();
+});
+
+test('pausar e retomar a faixa preserva as classes de visibilidade controladas pelo runtime', () => {
+  const h = harness();
+  const track = h.element('div', 'culture-ribbon-track', 900, 80, h.marquee);
+  track.id = 'culture-ribbon-track';
+  const exports = {};
+  let paused = false, previousClass;
+  runInNewContext(ribbonCompiled, {
+    exports,
+    require(name) {
+      if (name === 'react') return { useState: () => [paused, (update) => { paused = update(paused); }] };
+      if (name === 'lucide-react') return { Pause: 'pause-icon', Play: 'play-icon' };
+      if (name === 'react/jsx-runtime') return { jsx: (type, props) => ({ type, props }), jsxs: (type, props) => ({ type, props }) };
+      throw new Error(`Unexpected ribbon dependency: ${name}`);
+    },
+  });
+  function render() {
+    const markup = exports.CultureRibbon();
+    // Like React, write className only when the component changes that prop.
+    if (markup.props.className !== previousClass) {
+      h.marquee.classes.clear();
+      h.marquee.classList.add(...markup.props.className.split(/\s+/));
+      previousClass = markup.props.className;
+    }
+    if (markup.props['data-paused']) h.marquee.setAttribute('data-paused', markup.props['data-paused']);
+    else h.marquee.removeAttribute('data-paused');
+    return markup.props.children.find((child) => child.type === 'button');
+  }
+  let button = render();
+  h.mount();
+  h.intersect(h.marquee);
+  const manualPauseSelectors = pauseSelectors.filter((selector) => selector.includes('[data-paused'));
+  assert.ok(manualPauseSelectors.length, 'CSS recebe o estado de pausa declarado pelo componente');
+  for (const pause of [true, false]) {
+    button.props.onClick();
+    button = render();
+    assert.equal(button.props['aria-pressed'], pause);
+    assert.equal(button.props['aria-controls'], track.id);
+    assert.ok(h.marquee.classList.contains('motion-decor'));
+    assert.ok(h.marquee.classList.contains('motion-in-view'));
+    assert.equal(manualPauseSelectors.some((selector) => track.matches(selector)), pause);
+  }
+  // Hover/focus-within may still pause independently; resuming does not force blur.
+  h.cleanup();
+  assertStopped(h);
 });
 
 test('scrollspy usa altura em pixels e recalcula a faixa ao redimensionar sem repetir entradas', () => {

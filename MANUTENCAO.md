@@ -1,5 +1,19 @@
 # Manutenção da edição GitHub Pages
 
+## Correções da revisão final — 09/10/2026
+
+Base publicada: `630471db492f9537acbc528cac14d668111d296d`. Os quatro defeitos da auditoria foram tratados sem mudar fotografias, vídeos, projetos, pontos, rotas ou dependências.
+
+Educação Ambiental: os títulos de `.content-section.dark` e `.content-section.threat-section` usam o tom claro `--paper` sobre `--deep`, incluindo “O que pressiona os butiazais”. O teste `tests/dark-heading-contrast.test.mjs` verifica a regra no CSS exportado e o contraste dos tokens. Complementar com cores computadas no navegador; presença de um h2 no HTML não comprova legibilidade.
+
+Memória: Chico Pomboca é apresentado como obra incluída na programação anunciada da Feira, sem deduzir realização. Privacidade explica o carregamento sob demanda do Butiázinho em outro domínio e o recorde armazenado pelo jogo em localStorage, não pelo portal. `tests/privacy-memory.test.mjs` confere os textos visíveis da exportação e sua coerência com a ficha do conto.
+
+Efeitos: o CSS de `app/experience.css` seleciona os cards reais, sem depender de uma classe `motion-surface` adicionada uma única vez. O ponteiro continua delegado e o runtime não reescreve classes de propriedade dos componentes. Cards recriados por filtros ou após fechar um vídeo mantêm o halo; players ativos ficam imóveis. A faixa cultural usa className estável e `data-paused` para não perder classes de visibilidade ao pausar/retomar. Pausa ao passar o ponteiro ou manter foco dentro da faixa continua intencional: ao retomar pelo botão, retirar o foco da faixa antes de conferir movimento.
+
+Preservar redução de movimento, pausas em aba oculta, carregamento de mídia após clique e limpeza de observers/listeners. Não adicionar MutationObserver ou loops de animação para compensar renderizações React. Os testes reais do hook cobrem a atualização de cards e a separação de responsabilidades de classes, além dos casos anteriores.
+
+Relatório de implementação: `CORRECOES-2026-10-09.md`. A auditoria anterior e suas evidências locais continuam preservadas. Os sete alertas altos das ferramentas de desenvolvimento não foram resolvidos por downgrade forçado; o escopo desta atualização é o conjunto de correções confirmado pelo proprietário.
+
 ## Novas músicas e Memórias Afetivas — 08/10/2026
 
 Base publicada: `2a48cac0dcf38c4174e2348e5d2fcb4eca0ee70f`. A seleção de `content/music-videos.ts` passa a oito vídeos: Memórias Afetivas., Voa Butiazinho., Boi de Mamão., Circo da Maré, Caça ao tesouro. e os três anteriores. Memórias Afetivas integra a mesma seleção da Turma da Maré por instrução explícita do criador, não uma seção separada de Memória. O título publicado “Turma do Mar” continua intacto.

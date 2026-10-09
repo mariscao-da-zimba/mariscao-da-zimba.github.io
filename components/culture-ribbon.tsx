@@ -8,7 +8,7 @@ const themes = ["Cultura viva", "Memória", "Natureza", "Território", "Imbituba
 export function CultureRibbon() {
   const [paused, setPaused] = useState(false);
   return (
-    <div className={`culture-marquee${paused ? " is-paused" : ""}`}>
+    <div className="culture-marquee" data-paused={paused ? "true" : undefined}>
       <div className="culture-ribbon-track" id="culture-ribbon-track" aria-hidden="true">
         {[0, 1].map((copy) => (
           <div className="culture-ribbon-group" key={copy}>

@@ -28,7 +28,6 @@ export function MotionEffects() {
     const { signal } = controller;
     const seen = new WeakSet<Element>();
     const animations = new Set<Animation>();
-    const surfaces = new Set<HTMLElement>();
     const decorations = new Set<HTMLElement>();
     const navLinks = Array.from(document.querySelectorAll<HTMLAnchorElement>('.home-quick-nav a[href^="#"]'));
     const navTargets = navLinks.map((link) => document.getElementById(link.hash.slice(1)));
@@ -94,13 +93,7 @@ export function MotionEffects() {
         animation.cancel();
       });
       animations.clear();
-      surfaces.forEach((element) => {
-        element.classList.remove("motion-surface");
-        element.style.removeProperty("--surface-x");
-        element.style.removeProperty("--surface-y");
-      });
-      surfaces.clear();
-      activeSurface = null;
+      clearPointer();
       decorations.forEach((element) => element.classList.remove("motion-decor", "motion-in-view"));
       decorations.clear();
       visibleSections.clear();
@@ -148,10 +141,7 @@ export function MotionEffects() {
       paintScroll();
       if (!enhanced) return;
       if (finePointer.matches) {
-        document.querySelectorAll<HTMLElement>(surfaceSelector).forEach((element) => {
-          element.classList.add("motion-surface");
-          surfaces.add(element);
-        });
+        // Delegate to the current DOM; React may replace cards or their className.
         pointerController = new AbortController();
         document.addEventListener("pointermove", updatePointer, { passive: true, signal: pointerController.signal });
         document.addEventListener("pointerout", leavePointer, { passive: true, signal: pointerController.signal });

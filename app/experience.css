@@ -32,13 +32,14 @@
 }
 
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a).motion-surface {
+  /* Match the rendered cards directly, including previews restored or filtered by React. */
+  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a) {
     position: relative;
     isolation: isolate;
     transition: border-color .24s, box-shadow .24s, translate .24s var(--experience-ease);
   }
 
-  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a).motion-surface::after {
+  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a)::after {
     content: "";
     display: block;
     position: absolute;
@@ -56,17 +57,17 @@
     transition: opacity .24s;
   }
 
-  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a).motion-surface:is(:hover, :focus-within) {
+  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a):is(:hover, :focus-within) {
     translate: 0 -3px;
     border-color: var(--experience-edge);
     box-shadow: inset 0 0 0 1px #497a7338, 0 10px 24px var(--experience-shadow);
   }
 
-  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a).motion-surface:is(:hover, :focus-within)::after {
+  .motion-ready :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card:not(.is-playing), .coastal-card:not(.is-playing), .now-grid > a):is(:hover, :focus-within)::after {
     opacity: 1;
   }
 
-  .motion-ready .now-grid > a.motion-surface::after {
+  .motion-ready .now-grid > a::after {
     background: radial-gradient(190px circle at var(--surface-x, 50%) var(--surface-y, 50%), #f7f6f05c, transparent 74%);
   }
 }
@@ -261,7 +262,7 @@
     animation-play-state: running;
   }
 
-  .motion-ready .culture-marquee:is(.is-paused, :hover, :focus-within) > .culture-ribbon-track {
+  .motion-ready .culture-marquee:is([data-paused="true"], :hover, :focus-within) > .culture-ribbon-track {
     animation-play-state: paused;
   }
 
@@ -361,8 +362,8 @@
   animation-play-state: paused !important;
 }
 
-.motion-paused .motion-surface,
-.motion-paused .motion-surface::after {
+.motion-paused :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card, .coastal-card, .now-grid > a),
+.motion-paused :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card, .coastal-card, .now-grid > a)::after {
   transition: none;
 }
 
@@ -399,14 +400,13 @@
     display: none !important;
   }
 
-  .motion-surface,
-  .motion-surface:hover,
-  .motion-surface:focus-within {
+  :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card, .coastal-card, .now-grid > a),
+  :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card, .coastal-card, .now-grid > a):is(:hover, :focus-within) {
     translate: none !important;
     transform: none !important;
   }
 
-  .motion-surface::after {
+  :is(.project-strip > a, .project-card, .route-card, .archive-card, .music-card, .coastal-card, .now-grid > a)::after {
     display: none !important;
   }
 }
