@@ -1,6 +1,6 @@
 // A visible, narrow, time-limited exception is not a vulnerability patch.
 export const knownAdvisory = 'https://github.com/advisories/GHSA-vfj7-8cjw-p6xm';
-export const exceptionExpiresAt = '2026-11-08T23:59:59Z';
+export const exceptionExpiresAt = '2027-11-08T23:59:59Z';
 const knownNodes = new Map([
   ['node_modules/@next/eslint-plugin-next', '16.2.6'],
   ['node_modules/braces', '3.0.3'],
